@@ -1,0 +1,35 @@
+.AppointmentItem {    
+    width: 60%;
+    display: inline-block; 
+    margin: 20px;
+    border: 2px dashed #8F5C2C;
+    height: 210px;
+    padding: 10px;
+    overflow: auto;
+}
+
+.Paper {
+    display: inline-block;
+    margin: 10px 0;
+    width: 70%;
+}
+
+.Appointment {
+    width: 70%;
+}
+
+.Controls {
+    float: right;
+    width: 30%;
+    height: 100%;
+    position: relative;
+}
+
+.Button {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}

@@ -1,0 +1,15 @@
+.TimeTable{
+    width: 60%;
+    display: inline-block;
+    height: 600px;
+}
+
+.ListWrapper {
+    height: 50vh;
+    overflow:auto;
+    margin-top: 20px;
+}
+
+.Paper {
+    margin: 10px 0;
+}
