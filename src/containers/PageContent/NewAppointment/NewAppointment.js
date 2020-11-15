@@ -11,51 +11,52 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers'
 
-import axios from '../../../axios-appointments'
+import * as Causes from '../../../constants/AppointmentCausesConstants'
+import { findAppointments as findAppointmentsInFirebase } from '../../../axios-appointments'
 import Aux from '../../../hoc/Auxiliary/Auxiliary'
 import ListItem from '../../../components/UI/ListItem/ListItem'
 import classes from './NewAppointment.module.css'
 import Appointment from '../../../components/Content/Appointment/Appointment'
 import {
-  prepareAppointmentTerm,
+  prepareAppointmentDateElement,
   prepareAppointmentsMap
 } from '../Common/AppointmentUtilities'
 
 class NewAppointment extends Component {
   state = {
     date: new Date(),
-    appointmentMap: {},
+    appointmentRange: {},
     dates: [],
     selectedDates: [],
     appointmentCauses: [
-      'Internal medicine consultation',
-      'Family doctor consultation',
-      'Online consultation'
+      Causes.INTERNAL_MEDICINE_CONSULTATION,
+      Causes.FAMILY_DOCTOR_CONSULTATION,
+      Causes.ONLINE_CONSULTATION
     ]
   }
 
   componentDidMount () {
+    findAppointmentsInFirebase(this.props.token, response =>
+      this.appointmentsFoundHandler(response)
+    )
+  }
+
+  appointmentsFoundHandler = response => {
     const alreadyReservedAppointments = []
-    axios.get('/appointments.json?auth=' + this.props.token).then(response => {
-      for (let key in response.data) {
-        alreadyReservedAppointments.push(...response.data[key].selectedDates)
-      }
-      console.log(alreadyReservedAppointments)
-      const appointmentMap = prepareAppointmentsMap(
-        60,
-        alreadyReservedAppointments
-      )
-      const dateConvertedToString = this.state.date.toLocaleDateString()
-      const reservationFromCurrentDay = appointmentMap[dateConvertedToString]
-      this.setState({
-        appointmentMap: appointmentMap,
-        dates: reservationFromCurrentDay
-      })
+    for (let key in response.data) {
+      alreadyReservedAppointments.push(...response.data[key].selectedDates)
+    }
+    const appointmentRange = prepareAppointmentsMap(alreadyReservedAppointments)
+    const dateConvertedToString = this.state.date.toLocaleDateString()
+    const reservationFromCurrentDay = appointmentRange[dateConvertedToString]
+    this.setState({
+      appointmentRange: appointmentRange,
+      dates: reservationFromCurrentDay
     })
   }
 
   dateChangeHandler = date => {
-    const reservationFromCurrentDay = this.state.appointmentMap[
+    const reservationFromCurrentDay = this.state.appointmentRange[
       date.toLocaleDateString()
     ]
     this.setState({
@@ -75,7 +76,19 @@ class NewAppointment extends Component {
   }
 
   listItemClickedHandler = appointment => {
-    const updatedDates = this.state.dates.map(app => {
+    const updatedDates = this.reserveChoosedDate(appointment)
+    this.setState({
+      dates: updatedDates,
+      appointmentRange: this.updateAppointmentRange(
+        this.state.date.toLocaleDateString(),
+        updatedDates
+      ),
+      selectedDates: this.addChoosedDateToAlreadySelectedDates(appointment)
+    })
+  }
+
+  reserveChoosedDate = appointment => {
+    return this.state.dates.map(app => {
       if (app.id === appointment.id) {
         return {
           ...app,
@@ -85,53 +98,59 @@ class NewAppointment extends Component {
         return app
       }
     })
-    let updatedAppointmentMap = {
-      ...this.state.appointmentMap,
-      [this.state.date.toLocaleDateString()]: updatedDates
+  }
+
+  updateAppointmentRange = (day, updatedDates) => {
+    return {
+      ...this.state.appointmentRange,
+      [day]: updatedDates
     }
+  }
+
+  addChoosedDateToAlreadySelectedDates = appointment => {
     const updatedSelectedDates = [...this.state.selectedDates]
     const newSelectedDate = {
       ...appointment,
       isReserved: true,
-      selectedAppointmentCause: 'Internal medicine consultation'
+      selectedAppointmentCause: Causes.INTERNAL_MEDICINE_CONSULTATION
     }
     updatedSelectedDates.push(newSelectedDate)
-    this.setState({
-      dates: updatedDates,
-      appointmentMap: updatedAppointmentMap,
-      selectedDates: updatedSelectedDates
-    })
+    return updatedSelectedDates
   }
 
   removeReservedAppointmentHandler = reservedDate => {
-    const updatedDates = this.state.appointmentMap[reservedDate.date].map(
-      app => {
-        if (app.hour === reservedDate.hour) {
-          return {
-            ...app,
-            isReserved: false
-          }
-        } else {
-          return app
-        }
-      }
-    )
-    const updatedAppointmentMap = {
-      ...this.state.appointmentMap,
-      [reservedDate.date]: updatedDates
-    }
-    const updatedSelectedDates = this.state.selectedDates.filter(
-      selectedDate => selectedDate.id !== reservedDate.id
-    )
+    const updatedDates = this.removeReservation(reservedDate)
     this.setState({
-      appointmentMap: updatedAppointmentMap,
-      selectedDates: updatedSelectedDates
+      appointmentRange: this.updateAppointmentRange(
+        reservedDate.date,
+        updatedDates
+      ),
+      selectedDates: this.filterOutReservation(reservedDate.id)
     })
     if (reservedDate.date === this.state.date.toLocaleDateString()) {
       this.setState({
         dates: updatedDates
       })
     }
+  }
+
+  removeReservation = reservedDate => {
+    return this.state.appointmentRange[reservedDate.date].map(app => {
+      if (app.hour === reservedDate.hour) {
+        return {
+          ...app,
+          isReserved: false
+        }
+      } else {
+        return app
+      }
+    })
+  }
+
+  filterOutReservation = reservedDateId => {
+    return this.state.selectedDates.filter(
+      selectedDate => selectedDate.id !== reservedDateId
+    )
   }
 
   proceedWithReservation = () => {
@@ -148,71 +167,26 @@ class NewAppointment extends Component {
   }
 
   render () {
-    const listItems = []
-    let id = 0
-    this.state.dates.map(appointment => {
-      const term = prepareAppointmentTerm(appointment)
-      const listItem = (
-        <ListItem
-          key={id}
-          isButton
-          isDisabled={appointment.isReserved}
-          clicked={() => this.listItemClickedHandler(appointment)}
-          primary={term}
-          secondary={appointment.isReserved ? 'Reserved' : 'Not reserved'}
-          paperCss={classes.Paper}
-        />
-      )
-      listItems.push(listItem)
-      id++
-      return null
-    })
-    let index = 0
-    const newAppointments = this.state.selectedDates.map(selectedDate => {
-      const term = prepareAppointmentTerm(selectedDate)
-      return (
-        <Appointment
-          key={index++}
-          editMode={true}
-          appointmentTerm={term}
-          appointmentCauses={this.state.appointmentCauses}
-          selectedAppointmentCause={selectedDate.selectedAppointmentCause}
-          appointmentCauseChanged={event =>
-            this.appointmentCauseChangeHandler(event, selectedDate)
-          }
-          removeReservedAppointment={() =>
-            this.removeReservedAppointmentHandler(selectedDate)
-          }
-        />
-      )
-    })
+    const dateListElement = this.prepareDateListElement()
+    const reservedAppointments = this.prepareReservationsElements()
     let redirectButton
     if (this.state.selectedDates.length > 0) {
-      if (this.props.isAuthenticated) {
-        redirectButton = (
-          <div>
-            <button
-              type='button'
-              className='btn btn-primary w-25 h-25 mb-5'
-              onClick={this.proceedWithReservation}
-            >
-              PROCEED
-            </button>
-          </div>
-        )
-      } else {
-        redirectButton = (
-          <div>
-            <button
-              type='button'
-              className='btn btn-primary w-25 h-25 mb-5'
-              onClick={this.redirectToSignIn}
-            >
-              PLEASE SIGN IN
-            </button>
-          </div>
-        )
-      }
+      const isAuthenticated = this.props.isAuthenticated
+      const onClickAction = isAuthenticated
+        ? this.proceedWithReservation
+        : this.redirectToSignIn
+      const buttonLabel = isAuthenticated ? 'PROCEED' : 'PLEASE SIGN IN'
+      redirectButton = (
+        <div>
+          <button
+            type='button'
+            className='btn btn-primary w-25 h-25 mb-5'
+            onClick={onClickAction}
+          >
+            {buttonLabel}
+          </button>
+        </div>
+      )
     }
     return (
       <Aux>
@@ -231,14 +205,52 @@ class NewAppointment extends Component {
                 'aria-label': 'change date'
               }}
             />
-            <div className={classes.ListWrapper}>{listItems}</div>
+            <div className={classes.ListWrapper}>{dateListElement}</div>
           </MuiPickersUtilsProvider>
         </div>
         <Divider />
-        {newAppointments}
+        {reservedAppointments}
         {redirectButton}
       </Aux>
     )
+  }
+
+  prepareDateListElement = () => {
+    let id = 0
+    return this.state.dates.map(appointment => {
+      return (
+        <ListItem
+          key={id++}
+          isButton
+          isDisabled={appointment.isReserved}
+          clicked={() => this.listItemClickedHandler(appointment)}
+          primary={prepareAppointmentDateElement(appointment)}
+          secondary={appointment.isReserved ? 'Reserved' : 'Not reserved'}
+          paperCss={classes.Paper}
+        />
+      )
+    })
+  }
+
+  prepareReservationsElements = () => {
+    let index = 0
+    return this.state.selectedDates.map(selectedDate => {
+      return (
+        <Appointment
+          key={index++}
+          editMode={true}
+          appointmentTerm={prepareAppointmentDateElement(selectedDate)}
+          appointmentCauses={this.state.appointmentCauses}
+          selectedAppointmentCause={selectedDate.selectedAppointmentCause}
+          appointmentCauseChanged={event =>
+            this.appointmentCauseChangeHandler(event, selectedDate)
+          }
+          removeReservedAppointment={() =>
+            this.removeReservedAppointmentHandler(selectedDate)
+          }
+        />
+      )
+    })
   }
 }
 
@@ -249,4 +261,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(NewAppointment))
+export default withRouter(connect(mapStateToProps)(NewAppointment))

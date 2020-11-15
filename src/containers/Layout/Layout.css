@@ -1,0 +1,22 @@
+#wrapper {
+  overflow-x: hidden;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+@media (min-width: 768px) {
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.layout {
+  margin-top: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}

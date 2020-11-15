@@ -1,110 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import { NameDataModel } from '../../../../stateDataModels/NameDataModel'
+import { LastNameDataModel } from '../../../../stateDataModels/LastNameDataModel'
+import { EmailDataModel } from '../../../../stateDataModels/EmailDataModel'
+import { NumberDataModel } from '../../../../stateDataModels/NumberDataModel'
 import Form from '../../../Form/Form'
 import axios from '../../../../axios-appointments'
 
 class AppointmentDetails extends Component {
   state = {
     inputs: {
-      name: {
-        label: {
-          for: 'name',
-          value: 'First name'
-        },
-        attributes: {
-          id: 'name',
-          type: 'text',
-          placeholder: 'Name',
-          value: ''
-        },
-        validation: {
-          rules: {
-            required: {
-              errorMessage: 'Name is required'
-            }
-          },
-          errors: [],
-          isValid: false
-        }
-      },
-      lastName: {
-        label: {
-          for: 'lastName',
-          value: 'Last name'
-        },
-        attributes: {
-          id: 'lastName',
-          type: 'text',
-          placeholder: 'Last name',
-          value: ''
-        },
-        validation: {
-          rules: {
-            required: {
-              errorMessage: 'Last name is required'
-            }
-          },
-          errors: [],
-          isValid: false
-        }
-      },
-      email: {
-        label: {
-          for: 'email',
-          value: 'Your e-mail'
-        },
-        attributes: {
-          id: 'email',
-          type: 'email',
-          placeholder: 'Your e-mail',
-          value: ''
-        },
-        validation: {
-          rules: {
-            required: {
-              errorMessage: 'E-mail is required'
-            },
-            isEmail: {
-              errorMessage: 'Wrong format'
-            }
-          },
-          errors: [],
-          isValid: false
-        }
-      },
-      number: {
-        label: {
-          for: 'number',
-          value: 'Your number'
-        },
-        attributes: {
-          id: 'number',
-          type: 'number',
-          placeholder: 'Your number',
-          value: ''
-        },
-        validation: {
-          rules: {
-            required: {
-              errorMessage: 'Number is required'
-            },
-            isNumber: {
-              errorMessage: 'Should be numeric'
-            },
-            minLength: {
-              errorMessage: 'Min length is ',
-              value: 9
-            },
-            maxLength: {
-              errorMessage: 'Max length is ',
-              value: 9
-            }
-          },
-          errors: [],
-          isValid: false
-        }
-      }
+      name: NameDataModel,
+      lastName: LastNameDataModel,
+      email: EmailDataModel,
+      number: NumberDataModel
     },
     isFormValid: false
   }
@@ -122,9 +32,6 @@ class AppointmentDetails extends Component {
     }
     axios
       .post('/appointments.json?auth=' + this.props.token, dataToPersist)
-      .then(response => {
-        console.log(response)
-      })
       .catch(error => {
         console.log(error)
       })

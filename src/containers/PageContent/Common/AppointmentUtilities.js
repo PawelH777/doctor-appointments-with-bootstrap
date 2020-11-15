@@ -1,6 +1,8 @@
 import React from 'react'
 
-export const prepareAppointmentTerm = selectedDate => {
+import * as datesConstants from '../../../constants/DatesRelatedConstants'
+
+export const prepareAppointmentDateElement = selectedDate => {
   return (
     <div>
       <h6>{selectedDate.hour}:00</h6>
@@ -9,26 +11,27 @@ export const prepareAppointmentTerm = selectedDate => {
   )
 }
 
-export const prepareAppointmentsMap = (daysRange, reservedDates) => {
-  let appointsmentsMap = {}
+export const prepareAppointmentsMap = reservedDates => {
   const alreadySelectedDates = collectDates(reservedDates)
-  const openingHours = {
-    openingHour: 8,
-    closingHour: 20
-  }
-  let curDate = new Date()
-  curDate.setHours(openingHours.openingHour - 1)
   const actualSelectedDates = filterOutPreviousSelectedDates(
-    alreadySelectedDates,
-    curDate
+    alreadySelectedDates
   )
-  for (let currentDay = 0; currentDay < daysRange; currentDay++) {
-    curDate = new Date()
+  let appointsmentsMap = {}
+  for (
+    let currentDay = 0;
+    currentDay < datesConstants.DAYS_RANGE;
+    currentDay++
+  ) {
+    const curDate = new Date()
     curDate.setDate(curDate.getDate() + currentDay)
     const reservedDatesInCurrentDay = collectOnlyCurrentProcessedDayReservedDates(
       actualSelectedDates,
       curDate
     )
+    const openingHours = {
+      openingHour: datesConstants.OPENING_HOUR,
+      closingHour: datesConstants.CLOSING_HOUR
+    }
     const datesObjects = buildDatesForCurrentDay(
       curDate,
       openingHours,
@@ -56,7 +59,9 @@ const collectDates = reservedDates => {
   return reservedDatesDateTimes
 }
 
-const filterOutPreviousSelectedDates = (selectedDates, curDate) => {
+const filterOutPreviousSelectedDates = selectedDates => {
+  const curDate = new Date()
+  curDate.setHours(datesConstants.OPENING_HOUR - 1)
   return selectedDates.filter(selectedDate => selectedDate >= curDate)
 }
 
@@ -84,10 +89,6 @@ const buildDatesForCurrentDay = (
     currentHour < openingHours.closingHour;
     currentHour++
   ) {
-    const isHourReserved = isCurrentHourReserved(
-      currentHour,
-      reservedDatesInCurrentDay
-    )
     const date = {
       id: currentHour + dateInLocalDateFormat,
       year: curDate.getFullYear(),
@@ -95,7 +96,7 @@ const buildDatesForCurrentDay = (
       day: curDate.getDate(),
       date: dateInLocalDateFormat,
       hour: currentHour,
-      isReserved: isHourReserved
+      isReserved: isCurrentHourReserved(currentHour, reservedDatesInCurrentDay)
     }
     dates.push(date)
   }

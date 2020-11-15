@@ -5,7 +5,7 @@ import axios from '../../../axios-appointments'
 import classes from './Appointments.module.css'
 import SelectedDate from '../../../components/Content/Appointment/Appointment'
 import AppointmentCard from '../../../components/Content/AppointmentCard/AppointmentCard'
-import { prepareAppointmentTerm } from '../Common/AppointmentUtilities'
+import { prepareAppointmentDateElement } from '../Common/AppointmentUtilities'
 
 class Appointments extends Component {
   state = {
@@ -66,7 +66,6 @@ class Appointments extends Component {
   }
 }
 
-// Private methods used in ComponentDidMount hook
 const collectAppointments = response => {
   const appointments = []
   for (let key in response.data) {
@@ -85,12 +84,10 @@ const buildAppointment = (appointmentData, appointmentKey) => {
   }
 }
 
-// Private method used to filter out certain appointment
 const filterAppointments = (appointments, keyOfAppointmentToBeRemove) => {
   return appointments.filter(app => app.id !== keyOfAppointmentToBeRemove)
 }
 
-// Private method, prepares create representations of reserved dates which will be displayed
 const createSelectedDateElements = (
   selectedDates,
   appointmentCauses,
@@ -103,7 +100,7 @@ const createSelectedDateElements = (
       <SelectedDate
         key={technicalKey++}
         editMode={false}
-        appointmentTerm={prepareAppointmentTerm(date)}
+        appointmentTerm={prepareAppointmentDateElement(date)}
         appointmentCauses={appointmentCauses}
         selectedAppointmentCause={date.selectedAppointmentCause}
       />
@@ -113,7 +110,6 @@ const createSelectedDateElements = (
   return selectedDatesElements
 }
 
-// Method enabling using the state from store
 const mapStateToProps = state => {
   return {
     token: state.auth.token,
