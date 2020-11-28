@@ -34,6 +34,9 @@ const navBarForSmartphone = props => (
           </NavLink>
         </Aux>
       )}
+      <NavLink className='nav-item nav-link' to='/contact'>
+        Contact
+      </NavLink>
     </div>
   </nav>
 )

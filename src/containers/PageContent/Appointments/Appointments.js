@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import axios from '../../../axios-appointments'
+import SelectedDate from '../../../components/Appointment/Appointment'
+import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
+import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'
 import classes from './Appointments.module.css'
-import SelectedDate from '../../../components/Content/Appointment/Appointment'
-import AppointmentCard from '../../../components/Content/AppointmentCard/AppointmentCard'
-import { prepareAppointmentDateElement } from '../Common/AppointmentUtilities'
 
 class Appointments extends Component {
   state = {

@@ -40,34 +40,35 @@ export const checkAuthTimeout = expirationTime => {
 }
 
 export const auth = (email, password) => {
-  return dispatch => {
-    dispatch(authStart())
-    const authData = {
-      email: email,
-      password: password,
-      returnSecureToken: true
-    }
-    axios
-      .post(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDOLpcWn2ABinExUQ6BzuXFW0AjVITXM94',
-        authData
-      )
-      .then(response => {
-        console.log(response)
-        const expirationDate = new Date(
-          new Date().getTime() + response.data.expiresIn * 1000
+  return dispatch =>
+    new Promise(() => {
+      dispatch(authStart())
+      const authData = {
+        email: email,
+        password: password,
+        returnSecureToken: true
+      }
+      axios
+        .post(
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDOLpcWn2ABinExUQ6BzuXFW0AjVITXM94',
+          authData
         )
-        localStorage.setItem('token', response.data.idToken)
-        localStorage.setItem('expirationDate', expirationDate)
-        localStorage.setItem('userId', response.data.localId)
-        dispatch(authSuccess(response.data.idToken, response.data.localId))
-        dispatch(checkAuthTimeout(response.data.expiresIn))
-      })
-      .catch(error => {
-        console.log(error)
-        dispatch(authFail(error))
-      })
-  }
+        .then(response => {
+          console.log(response)
+          const expirationDate = new Date(
+            new Date().getTime() + response.data.expiresIn * 1000
+          )
+          localStorage.setItem('token', response.data.idToken)
+          localStorage.setItem('expirationDate', expirationDate)
+          localStorage.setItem('userId', response.data.localId)
+          dispatch(authSuccess(response.data.idToken, response.data.localId))
+          dispatch(checkAuthTimeout(response.data.expiresIn))
+        })
+        .catch(error => {
+          console.log(error)
+          dispatch(authFail(error))
+        })
+    })
 }
 
 export const authCheckState = () => {

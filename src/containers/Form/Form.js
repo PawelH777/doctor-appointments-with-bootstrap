@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 
-import classes from './Form.module.css'
-import FormInput from '../../components/UI/FormInput/FormInput'
-import { updateObject } from '../../shared/utility'
-import { checkValidity } from '../../shared/validation'
+import FormInput from '../../components/FormInput/FormInput'
+import { updateObject } from '../../utilities/commonUtility'
+import { checkValidity } from '../../utilities/validationUtility'
 
 class Form extends Component {
   state = {
@@ -68,8 +67,8 @@ class Form extends Component {
     }
 
     return (
-      <div className={classes.Form}>
-        <form className='m-3'>
+      <div className='m-3'>
+        <form>
           {inputs}
           <button
             type='button'

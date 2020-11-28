@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { NameDataModel } from '../../../../stateDataModels/NameDataModel'
-import { LastNameDataModel } from '../../../../stateDataModels/LastNameDataModel'
-import { EmailDataModel } from '../../../../stateDataModels/EmailDataModel'
-import { NumberDataModel } from '../../../../stateDataModels/NumberDataModel'
-import Form from '../../../Form/Form'
+import { NameDataModel } from '../../../../data/stateDataModels/NameDataModel'
+import { LastNameDataModel } from '../../../../data/stateDataModels/LastNameDataModel'
+import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
+import { NumberDataModel } from '../../../../data/stateDataModels/NumberDataModel'
+import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
 import axios from '../../../../axios-appointments'
 
 class AppointmentDetails extends Component {
@@ -13,7 +13,7 @@ class AppointmentDetails extends Component {
     inputs: {
       name: NameDataModel,
       lastName: LastNameDataModel,
-      email: EmailDataModel,
+      email: new EmailDataModel(),
       number: NumberDataModel
     },
     isFormValid: false
@@ -39,8 +39,12 @@ class AppointmentDetails extends Component {
   }
 
   render () {
-    console.log(this.props)
-    return <Form inputs={this.state.inputs} submitted={this.submitHandler} />
+    return (
+      <FormWithShadow
+        inputs={this.state.inputs}
+        submitted={this.submitHandler}
+      />
+    )
   }
 }
 

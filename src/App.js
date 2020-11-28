@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import Layout from './containers/Layout/Layout'
+import Layout from './hoc/Layout/Layout'
 import * as actions from './store/actions/auth'
 
 class App extends Component {

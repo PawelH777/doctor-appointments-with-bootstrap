@@ -11,16 +11,16 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers'
 
-import * as Causes from '../../../constants/AppointmentCausesConstants'
+import * as Causes from '../../../data/constants/AppointmentCausesConstants'
 import { findAppointments as findAppointmentsInFirebase } from '../../../axios-appointments'
 import Aux from '../../../hoc/Auxiliary/Auxiliary'
-import ListItem from '../../../components/UI/ListItem/ListItem'
-import classes from './NewAppointment.module.css'
-import Appointment from '../../../components/Content/Appointment/Appointment'
+import ListItem from '../../../components/ListItem/ListItem'
+import Appointment from '../../../components/Appointment/Appointment'
 import {
   prepareAppointmentDateElement,
   prepareAppointmentsMap
-} from '../Common/AppointmentUtilities'
+} from '../../../utilities/appointmentUtilities'
+import classes from './NewAppointment.module.css'
 
 class NewAppointment extends Component {
   state = {

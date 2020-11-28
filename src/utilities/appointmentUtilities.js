@@ -1,6 +1,6 @@
 import React from 'react'
 
-import * as datesConstants from '../../../constants/DatesRelatedConstants'
+import * as datesConstants from '../data/constants/DatesRelatedConstants'
 
 export const prepareAppointmentDateElement = selectedDate => {
   return (

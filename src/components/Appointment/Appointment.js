@@ -1,7 +1,7 @@
 import React from 'react'
 
-import ListItem from '../../UI/ListItem/ListItem'
-import Selector from '../../UI/Selector/Selector'
+import ListItem from '../ListItem/ListItem'
+import Selector from '../Selector/Selector'
 import classes from './Appointment.module.css'
 
 const appointment = props => {

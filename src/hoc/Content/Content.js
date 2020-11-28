@@ -9,6 +9,7 @@ import SignUp from '../../containers/PageContent/Auth/SignUp/SignUp'
 import NewAppointment from '../../containers/PageContent/NewAppointment/NewAppointment'
 import AppointmentsDetails from '../../containers/PageContent/NewAppointment/AppointmentDetails/AppointmentDetails'
 import Appointments from '../../containers/PageContent/Appointments/Appointments'
+import Contact from '../../containers/PageContent/Contact/Contact'
 
 const content = props => {
   const routesWhenAuthenticated = (
@@ -17,6 +18,8 @@ const content = props => {
       <Route path='/new/details' component={AppointmentsDetails} />
       <Route path='/appointments' component={Appointments} />
       <Route path='/new' component={NewAppointment} />
+      <Route path='/contact' component={Contact} />
+      <Route path='/home' exact component={Start} />
       <Route path='/' exact component={Start} />
       <Redirect to='/' />
     </Switch>
@@ -26,6 +29,8 @@ const content = props => {
     <Switch>
       <Route path='/login' component={SignIn} />
       <Route path='/signup' component={SignUp} />
+      <Route path='/contact' component={Contact} />
+      <Route path='/home' exact component={Start} />
       <Route path='/' exact component={Start} />
       <Redirect to='/' />
     </Switch>

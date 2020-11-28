@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { EmailDataModel } from '../../../../stateDataModels/EmailDataModel'
-import { passwordDataModel } from '../../../../stateDataModels/PasswordDataModel'
-import Form from '../../../Form/Form'
+import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
+import { passwordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
 import * as actions from '../../../../store/actions/auth'
+import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
 
 class SignIn extends Component {
   state = {
     inputs: {
-      email: EmailDataModel,
+      email: new EmailDataModel(),
       password: passwordDataModel(false)
     },
     isFormValid: false
@@ -18,12 +18,16 @@ class SignIn extends Component {
   submitHandler = form => {
     const email = form.email.attributes.value
     const password = form.password.attributes.value
-    this.props.onAuth(email, password)
-    this.props.history.goBack()
+    this.props.onAuth(email, password).then(() => this.props.history.goBack())
   }
 
   render () {
-    return <Form inputs={this.state.inputs} submitted={this.submitHandler} />
+    return (
+      <FormWithShadow
+        inputs={this.state.inputs}
+        submitted={this.submitHandler}
+      />
+    )
   }
 }
 

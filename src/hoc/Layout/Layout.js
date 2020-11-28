@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import './Layout.css'
 import NavBar from '../../components/Navigation/NavBar/NavBar'
-import Content from '../../components/Content/Content'
+import Content from '../Content/Content'
 
 class Layout extends Component {
   state = {

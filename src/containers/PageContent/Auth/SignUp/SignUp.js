@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 
 import axios from 'axios'
 
-import { NameDataModel } from '../../../../stateDataModels/NameDataModel'
-import { LastNameDataModel } from '../../../../stateDataModels/LastNameDataModel'
-import { EmailDataModel } from '../../../../stateDataModels/EmailDataModel'
-import { NumberDataModel } from '../../../../stateDataModels/NumberDataModel'
-import { passwordDataModel } from '../../../../stateDataModels/PasswordDataModel'
-import { RepeatedPasswordDataModel } from '../../../../stateDataModels/RepeatedPasswordDataModel'
-import Form from '../../../../containers/Form/Form'
+import { NameDataModel } from '../../../../data/stateDataModels/NameDataModel'
+import { LastNameDataModel } from '../../../../data/stateDataModels/LastNameDataModel'
+import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
+import { NumberDataModel } from '../../../../data/stateDataModels/NumberDataModel'
+import { passwordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
+import { RepeatedPasswordDataModel } from '../../../../data/stateDataModels/RepeatedPasswordDataModel'
+import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
 import axiosAppointments from '../../../../axios-appointments'
 
 class SignUp extends Component {
@@ -16,7 +16,7 @@ class SignUp extends Component {
     inputs: {
       name: NameDataModel,
       lastName: LastNameDataModel,
-      email: EmailDataModel,
+      email: new EmailDataModel(),
       number: NumberDataModel,
       password: passwordDataModel(true),
       repeatedPassword: RepeatedPasswordDataModel
@@ -42,7 +42,12 @@ class SignUp extends Component {
   }
 
   render () {
-    return <Form inputs={this.state.inputs} submitted={this.submitHandler} />
+    return (
+      <FormWithShadow
+        inputs={this.state.inputs}
+        submitted={this.submitHandler}
+      />
+    )
   }
 }
 
