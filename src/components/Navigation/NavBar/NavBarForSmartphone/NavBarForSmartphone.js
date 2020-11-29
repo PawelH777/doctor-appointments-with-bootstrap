@@ -19,7 +19,7 @@ const navBarForSmartphone = props => (
           <NavLink className='nav-item nav-link' to='/new'>
             New Appointment
           </NavLink>
-          <Divider orientation='vertical' flexItem light={true} />
+          <Divider orientation='vertical' flexItem />
           <NavLink className='nav-item nav-link' to='/logout'>
             Log Out
           </NavLink>

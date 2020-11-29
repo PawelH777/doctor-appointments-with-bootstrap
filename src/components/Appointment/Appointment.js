@@ -57,7 +57,8 @@ const createButtonElement = (styles, removeReservedAppointment) => {
     <div className={styles}>
       <button
         type='button'
-        className='btn btn-danger w-50 h-25'
+        className='btn btn-danger h-25'
+        style={{ width: '100px' }}
         onClick={removeReservedAppointment}
       >
         REMOVE

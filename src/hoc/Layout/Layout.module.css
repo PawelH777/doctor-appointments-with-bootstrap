@@ -1,0 +1,16 @@
+.Layout {
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .Layout {
+    display: flex-column;
+  }
+}
+
+.Sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

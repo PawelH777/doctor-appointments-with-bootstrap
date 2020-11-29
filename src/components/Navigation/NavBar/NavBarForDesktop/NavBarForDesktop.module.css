@@ -1,9 +1,6 @@
-.fixed {
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+.DesktopNavbar {
   display: flex;
   align-items: center;
   width: 100%;
-  z-index: 1; /* Stay on top */
-  overflow-x: hidden; /* Disable horizontal scroll */
   padding: 0.5rem 1rem;
 }

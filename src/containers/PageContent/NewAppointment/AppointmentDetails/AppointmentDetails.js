@@ -6,15 +6,15 @@ import { LastNameDataModel } from '../../../../data/stateDataModels/LastNameData
 import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
 import { NumberDataModel } from '../../../../data/stateDataModels/NumberDataModel'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
-import axios from '../../../../axios-appointments'
+import axios from '../../../../axios-doctor-appointments'
 
 class AppointmentDetails extends Component {
   state = {
     inputs: {
-      name: NameDataModel,
-      lastName: LastNameDataModel,
+      name: new NameDataModel(),
+      lastName: new LastNameDataModel(),
       email: new EmailDataModel(),
-      number: NumberDataModel
+      number: new NumberDataModel()
     },
     isFormValid: false
   }

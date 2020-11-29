@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import Aux from '../../../hoc/Auxiliary/Auxiliary'
-
 class Start extends Component {
   state = {
     pathToRedirect: '/login',
@@ -28,8 +26,8 @@ class Start extends Component {
 
   render () {
     return (
-      <Aux>
-        <div class='h2 mb-4'> Welcome to my page! </div>
+      <div className='flex-column'>
+        <div className='h2 mb-4'> Welcome to my page! </div>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquet
           ipsum sed consequat condimentum. Aenean non libero arcu. Maecenas
@@ -58,7 +56,7 @@ class Start extends Component {
         >
           {this.state.buttonLabel}
         </button>
-      </Aux>
+      </div>
     )
   }
 }

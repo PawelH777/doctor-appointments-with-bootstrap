@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import axios from '../../../axios-appointments'
+import axios from '../../../axios-doctor-appointments'
 import SelectedDate from '../../../components/Appointment/Appointment'
 import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
 import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'

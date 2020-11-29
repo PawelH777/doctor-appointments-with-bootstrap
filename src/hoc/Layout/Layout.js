@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './Layout.css'
+import classes from './Layout.module.css'
 import NavBar from '../../components/Navigation/NavBar/NavBar'
 import Content from '../Content/Content'
 
@@ -13,12 +13,15 @@ class Layout extends Component {
 
   render () {
     return (
-      <div className='d-flex' id='wrapper'>
-        <div id='page-content-wrapper'>
+      <div className={classes.Layout}>
+        <div className={classes.Sticky}>
           <NavBar isAuth={this.props.isAuthenticated} />
-          <div className='container-fluid layout'>
-            <Content isAuth={this.props.isAuthenticated} />
-          </div>
+        </div>
+        <div
+          className='d-flex align-self-center justify-content-center container-fluid text-center'
+          style={{ height: '90%' }}
+        >
+          <Content isAuth={this.props.isAuthenticated} />
         </div>
       </div>
     )

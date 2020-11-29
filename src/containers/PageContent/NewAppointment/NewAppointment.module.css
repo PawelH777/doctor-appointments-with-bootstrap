@@ -1,15 +1,16 @@
-.TimeTable{
-    width: 60%;
-    display: inline-block;
-    height: 600px;
+.TimeTable {
+  margin-top: 5%;
+  width: 70%;
+  display: inline-block;
+  align-self: start;
 }
 
 .ListWrapper {
-    height: 50vh;
-    overflow:auto;
-    margin-top: 20px;
+  height: 50vh;
+  overflow: auto;
+  margin-top: 20px;
 }
 
 .Paper {
-    margin: 10px 0;
+  margin: 10px 0;
 }

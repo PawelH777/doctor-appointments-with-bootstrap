@@ -8,7 +8,11 @@ import classes from './NavBarForDesktop.module.css'
 import Aux from '../../../../hoc/Auxiliary/Auxiliary'
 
 const navBarForDesktop = props => (
-  <nav className={classes.fixed + ' navbar-expand-md navbar-dark bg-primary'}>
+  <nav
+    className={
+      classes.DesktopNavbar + ' navbar-expand-md navbar-dark bg-primary'
+    }
+  >
     <div className='navbar-nav mr-auto mt-lg-0'>
       <NavLink className='nav-item nav-link' to='/home'>
         <AiOutlineHome size='2em' />

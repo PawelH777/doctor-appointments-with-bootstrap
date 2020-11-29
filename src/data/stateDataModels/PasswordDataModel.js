@@ -1,15 +1,16 @@
-export const passwordDataModel = withMustMatchCheck => {
-  let rules = {
-    rules: {
-      required: {
-        errorMessage: 'Password is required'
-      }
+export class PasswordDataModel {
+  label
+  attributes
+  validation
+  #rules = {
+    required: {
+      errorMessage: 'Password is required'
     }
   }
 
-  if (withMustMatchCheck) {
-    rules = {
-      rules: {
+  constructor (withMustMatchCheck) {
+    if (withMustMatchCheck) {
+      this.#rules = {
         required: {
           errorMessage: 'Password is required'
         },
@@ -19,21 +20,21 @@ export const passwordDataModel = withMustMatchCheck => {
         }
       }
     }
-  }
 
-  return {
-    label: {
+    this.label = {
       for: 'password',
       value: 'Password'
-    },
-    attributes: {
+    }
+
+    this.attributes = {
       id: 'password',
       type: 'password',
       placeholder: 'Password',
       value: ''
-    },
-    validation: {
-      rules,
+    }
+
+    this.validation = {
+      rules: this.#rules,
       errors: [],
       isValid: false
     }

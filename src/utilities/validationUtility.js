@@ -119,4 +119,7 @@ const filterOutErrorMessage = (input, errorMessage) => {
     err => err !== errorMessage
   )
   input.validation.errors = [...filteredErrorsFromToMatchInput]
+  if (input.validation.errors.length === 0) {
+    input.validation.isValid = true
+  }
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
-import { passwordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
+import { PasswordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
 import * as actions from '../../../../store/actions/auth'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
 
@@ -10,7 +10,7 @@ class SignIn extends Component {
   state = {
     inputs: {
       email: new EmailDataModel(),
-      password: passwordDataModel(false)
+      password: new PasswordDataModel(false)
     },
     isFormValid: false
   }

@@ -12,7 +12,7 @@ import {
 } from '@material-ui/pickers'
 
 import * as Causes from '../../../data/constants/AppointmentCausesConstants'
-import { findAppointments as findAppointmentsInFirebase } from '../../../axios-appointments'
+import axios from '../../../axios-doctor-appointments'
 import Aux from '../../../hoc/Auxiliary/Auxiliary'
 import ListItem from '../../../components/ListItem/ListItem'
 import Appointment from '../../../components/Appointment/Appointment'
@@ -36,9 +36,10 @@ class NewAppointment extends Component {
   }
 
   componentDidMount () {
-    findAppointmentsInFirebase(this.props.token, response =>
-      this.appointmentsFoundHandler(response)
-    )
+    axios
+      .get('/appointments.json?auth=' + this.props.token)
+      .then(response => this.appointmentsFoundHandler(response))
+      .catch(err => console.log(err))
   }
 
   appointmentsFoundHandler = response => {
@@ -207,10 +208,12 @@ class NewAppointment extends Component {
             />
             <div className={classes.ListWrapper}>{dateListElement}</div>
           </MuiPickersUtilsProvider>
+          <div className='mt-5'>
+            {reservedAppointments.length > 0 ? <Divider /> : null}
+            {reservedAppointments}
+            {redirectButton}
+          </div>
         </div>
-        <Divider />
-        {reservedAppointments}
-        {redirectButton}
       </Aux>
     )
   }

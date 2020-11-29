@@ -1,25 +1,26 @@
 import React, { Component } from 'react'
 
 import axios from 'axios'
+import { withRouter } from 'react-router-dom'
 
 import { NameDataModel } from '../../../../data/stateDataModels/NameDataModel'
 import { LastNameDataModel } from '../../../../data/stateDataModels/LastNameDataModel'
 import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
 import { NumberDataModel } from '../../../../data/stateDataModels/NumberDataModel'
-import { passwordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
+import { PasswordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
 import { RepeatedPasswordDataModel } from '../../../../data/stateDataModels/RepeatedPasswordDataModel'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
-import axiosAppointments from '../../../../axios-appointments'
+import axiosAppointments from '../../../../axios-doctor-appointments'
 
 class SignUp extends Component {
   state = {
     inputs: {
-      name: NameDataModel,
-      lastName: LastNameDataModel,
+      name: new NameDataModel(),
+      lastName: new LastNameDataModel(),
       email: new EmailDataModel(),
-      number: NumberDataModel,
-      password: passwordDataModel(true),
-      repeatedPassword: RepeatedPasswordDataModel
+      number: new NumberDataModel(),
+      password: new PasswordDataModel(true),
+      repeatedPassword: new RepeatedPasswordDataModel()
     },
     isFormValid: false
   }
@@ -38,7 +39,7 @@ class SignUp extends Component {
       password: password,
       returnSecureToken: true
     }
-    registerUser(authData, personalInfo)
+    registerUser(authData, personalInfo, this.props)
   }
 
   render () {
@@ -51,7 +52,7 @@ class SignUp extends Component {
   }
 }
 
-const registerUser = (authData, personalInfo) => {
+const registerUser = (authData, personalInfo, props) => {
   axios
     .post(
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDOLpcWn2ABinExUQ6BzuXFW0AjVITXM94',
@@ -65,7 +66,7 @@ const registerUser = (authData, personalInfo) => {
       console.log(error)
       window.alert('Critical error. Please do it again, now correctly')
     })
-    .finally(() => this.props.history.goBack())
+    .finally(() => props.history.goBack())
 }
 
 const createNewUser = personalInfo => {
@@ -79,4 +80,4 @@ const createNewUser = personalInfo => {
     })
 }
 
-export default SignUp
+export default withRouter(SignUp)

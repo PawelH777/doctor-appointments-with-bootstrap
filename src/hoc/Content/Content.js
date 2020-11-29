@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom'
 
-import classes from './Content.module.css'
 import Start from '../../containers/PageContent/Start/Start'
 import LogOut from '../../containers/PageContent/Auth/LogOut/LogOut'
 import SignIn from '../../containers/PageContent/Auth/SignIn/SignIn'
@@ -37,7 +36,7 @@ const content = props => {
   )
 
   return (
-    <div className={classes.Content}>
+    <div className='w-75 h-100 d-flex align-items-center justify-content-center'>
       {props.isAuth ? routesWhenAuthenticated : routesWhenUnauthenticated}
     </div>
   )
