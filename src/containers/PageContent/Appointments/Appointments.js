@@ -62,7 +62,13 @@ class Appointments extends Component {
       )
       appointments.push(appointmentCard)
     }
-    return <div className={classes.Appointments}>{appointments}</div>
+    return appointments.length > 0 ? (
+      <div className={classes.Appointments}>{appointments}</div>
+    ) : (
+      <div className='h2 align-self-center'>
+        No appointments! Please make a new one to view it there.
+      </div>
+    )
   }
 }
 
