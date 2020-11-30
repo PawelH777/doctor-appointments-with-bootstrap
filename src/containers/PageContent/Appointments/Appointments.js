@@ -5,15 +5,17 @@ import axios from '../../../axios-doctor-appointments'
 import SelectedDate from '../../../components/Appointment/Appointment'
 import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
 import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'
+import Spinner from '../../../components/Spinner/Spinner'
 import classes from './Appointments.module.css'
 
 class Appointments extends Component {
   state = {
-    appointments: []
+    appointments: [],
+    loading: true
   }
 
   componentDidMount () {
-    const queryParams =
+    const queryParams = // TODO Change this request in the way that appointments < current day aren't retrieved
       '?auth=' +
       this.props.token +
       '&orderBy="userId"&equalTo="' +
@@ -22,7 +24,7 @@ class Appointments extends Component {
     axios
       .get('/appointments.json' + queryParams)
       .then(response =>
-        this.setState({ appointments: collectAppointments(response) })
+        this.setState({ appointments: collectAppointments(response), loading: false })
       )
   }
 
@@ -47,28 +49,26 @@ class Appointments extends Component {
     let technicalKey = 0
     for (let appointmentKey in this.state.appointments) {
       const appointment = this.state.appointments[appointmentKey]
+      const reservedDates = createSelectedDateElements(
+          appointment.dates,
+          appointment.appointmentCauses,
+          technicalKey
+      )
+      if(reservedDates.length === 0) {
+        continue
+      }
       const appointmentCard = (
         <AppointmentCard
           key={appointmentKey}
           info={appointment.information}
-          dates={createSelectedDateElements(
-            appointment.dates,
-            appointment.appointmentCauses,
-            technicalKey
-          )}
+          dates={reservedDates}
           removeReservation={this.removeReservedReservationHandler}
           appointmentId={appointment.id}
         />
       )
       appointments.push(appointmentCard)
     }
-    return appointments.length > 0 ? (
-      <div className={classes.Appointments}>{appointments}</div>
-    ) : (
-      <div className='h2 align-self-center'>
-        No appointments! Please make a new one to view it there.
-      </div>
-    )
+    return createContent(appointments, this.state.loading)
   }
 }
 
@@ -101,20 +101,48 @@ const createSelectedDateElements = (
 ) => {
   const selectedDatesElements = []
   for (let dateKey in selectedDates) {
-    const date = selectedDates[dateKey]
+    const date = parseToDate(selectedDates[dateKey])
+    const chosenAppointmentCause = selectedDates[dateKey].selectedAppointmentCause
+    if(date < new Date()){
+      continue
+    }
     const formattedDate = (
       <SelectedDate
         key={technicalKey++}
         editMode={false}
-        appointmentTerm={prepareAppointmentDateElement(date)}
+        appointmentTerm={prepareAppointmentDateElement(date.toLocaleDateString(), date.getHours())}
         appointmentCauses={appointmentCauses}
-        selectedAppointmentCause={date.selectedAppointmentCause}
+        selectedAppointmentCause={chosenAppointmentCause}
       />
     )
     selectedDatesElements.push(formattedDate)
   }
   return selectedDatesElements
 }
+
+const parseToDate = (selectedDate) => {
+  return new Date(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedDate.hour
+  )
+}
+
+const createContent = (appointments, loading) => {
+  if(!loading) {
+    if(appointments.length > 0){
+      return <div className={classes.Appointments}>{appointments}</div>
+    }
+    else {
+       return <div className='h2 align-self-center'>
+            No appointments! Please make a new one to view it there.
+          </div>
+    }
+  }
+  return <Spinner />
+}
+
 
 const mapStateToProps = state => {
   return {

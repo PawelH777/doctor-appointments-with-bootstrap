@@ -2,19 +2,20 @@ import React from 'react'
 
 import * as datesConstants from '../data/constants/DatesRelatedConstants'
 
-export const prepareAppointmentDateElement = selectedDate => {
+export const prepareAppointmentDateElement = (date, hour) => {
   return (
     <div>
-      <h6>{selectedDate.hour}:00</h6>
-      <h5>{selectedDate.date}</h5>
+      <h6>{hour}:00</h6>
+      <h5>{date}</h5>
     </div>
   )
 }
 
 export const prepareAppointmentsMap = reservedDates => {
   const alreadySelectedDates = collectDates(reservedDates)
+  let curDate = determineCurrentDay();
   const actualSelectedDates = filterOutPreviousSelectedDates(
-    alreadySelectedDates
+    alreadySelectedDates, curDate
   )
   let appointsmentsMap = {}
   for (
@@ -22,8 +23,8 @@ export const prepareAppointmentsMap = reservedDates => {
     currentDay < datesConstants.DAYS_RANGE;
     currentDay++
   ) {
-    const curDate = new Date()
     curDate.setDate(curDate.getDate() + currentDay)
+    curDate = setOnMondayIfIsWeekend(curDate)
     const reservedDatesInCurrentDay = collectOnlyCurrentProcessedDayReservedDates(
       actualSelectedDates,
       curDate
@@ -59,9 +60,22 @@ const collectDates = reservedDates => {
   return reservedDatesDateTimes
 }
 
-const filterOutPreviousSelectedDates = selectedDates => {
-  const curDate = new Date()
-  curDate.setHours(datesConstants.OPENING_HOUR - 1)
+const determineCurrentDay = () => {
+  let curDate = new Date()
+  curDate = setNextDayIfIsDuringOrAfterClosingHour(curDate)
+  return setOnMondayIfIsWeekend(curDate);
+}
+
+const setNextDayIfIsDuringOrAfterClosingHour = currentDate => {
+  return currentDate.getHours() >= datesConstants.CLOSING_HOUR ? currentDate.setDate(currentDate.getDate() + 1) : currentDate
+}
+
+const setOnMondayIfIsWeekend = currentDate => {
+  let date = currentDate.getDay() === 0 ? currentDate.setDate(currentDate.getDate() + 1) : currentDate
+  return date.getDay() === 6 ? date.setDate(date.getDate() + 2) : date
+}
+
+const filterOutPreviousSelectedDates = (selectedDates, curDate) => {
   return selectedDates.filter(selectedDate => selectedDate >= curDate)
 }
 

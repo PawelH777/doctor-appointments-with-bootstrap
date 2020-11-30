@@ -37,7 +37,7 @@ const content = props => {
 
   return (
     <div className='w-75 h-100 d-flex align-items-center justify-content-center'>
-      {props.isAuth ? routesWhenAuthenticated : routesWhenUnauthenticated}
+        {props.isAuth ? routesWhenAuthenticated : routesWhenUnauthenticated}
     </div>
   )
 }

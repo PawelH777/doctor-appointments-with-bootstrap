@@ -13,7 +13,7 @@ import {
 
 import * as Causes from '../../../data/constants/AppointmentCausesConstants'
 import axios from '../../../axios-doctor-appointments'
-import Aux from '../../../hoc/Auxiliary/Auxiliary'
+import Spinner from '../../../components/Spinner/Spinner'
 import ListItem from '../../../components/ListItem/ListItem'
 import Appointment from '../../../components/Appointment/Appointment'
 import {
@@ -32,12 +32,13 @@ class NewAppointment extends Component {
       Causes.INTERNAL_MEDICINE_CONSULTATION,
       Causes.FAMILY_DOCTOR_CONSULTATION,
       Causes.ONLINE_CONSULTATION
-    ]
+    ],
+    loading: true
   }
 
   componentDidMount () {
     axios
-      .get('/appointments.json?auth=' + this.props.token)
+      .get('/appointments.json?auth=' + this.props.token) // TODO Change this request in the way that appointments < current day aren't retrieved
       .then(response => this.appointmentsFoundHandler(response))
       .catch(err => console.log(err))
   }
@@ -52,7 +53,8 @@ class NewAppointment extends Component {
     const reservationFromCurrentDay = appointmentRange[dateConvertedToString]
     this.setState({
       appointmentRange: appointmentRange,
-      dates: reservationFromCurrentDay
+      dates: reservationFromCurrentDay,
+      loading: false
     })
   }
 
@@ -189,22 +191,21 @@ class NewAppointment extends Component {
         </div>
       )
     }
-    return (
-      <Aux>
-        <div className={classes.TimeTable}>
+    let content =
+        (<div className={classes.TimeTable}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
-              disableToolbar
-              variant='inline'
-              format='MM/dd/yyyy'
-              margin='normal'
-              id='date-picker-inline'
-              label='Date picker inline'
-              value={this.state.date}
-              onChange={this.dateChangeHandler}
-              KeyboardButtonProps={{
-                'aria-label': 'change date'
-              }}
+                disableToolbar
+                variant='inline'
+                format='MM/dd/yyyy'
+                margin='normal'
+                id='date-picker-inline'
+                label='Date picker inline'
+                value={this.state.date}
+                onChange={this.dateChangeHandler}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date'
+                }}
             />
             <div className={classes.ListWrapper}>{dateListElement}</div>
           </MuiPickersUtilsProvider>
@@ -213,9 +214,11 @@ class NewAppointment extends Component {
             {reservedAppointments}
             {redirectButton}
           </div>
-        </div>
-      </Aux>
-    )
+        </div>)
+    if(this.state.loading) {
+      content = <Spinner />
+    }
+    return content
   }
 
   prepareDateListElement = () => {
@@ -227,7 +230,7 @@ class NewAppointment extends Component {
           isButton
           isDisabled={appointment.isReserved}
           clicked={() => this.listItemClickedHandler(appointment)}
-          primary={prepareAppointmentDateElement(appointment)}
+          primary={prepareAppointmentDateElement(appointment.date, appointment.hour)}
           secondary={appointment.isReserved ? 'Reserved' : 'Not reserved'}
           paperCss={classes.Paper}
         />
@@ -242,7 +245,7 @@ class NewAppointment extends Component {
         <Appointment
           key={index++}
           editMode={true}
-          appointmentTerm={prepareAppointmentDateElement(selectedDate)}
+          appointmentTerm={prepareAppointmentDateElement(selectedDate.date, selectedDate.hour)}
           appointmentCauses={this.state.appointmentCauses}
           selectedAppointmentCause={selectedDate.selectedAppointmentCause}
           appointmentCauseChanged={event =>
