@@ -1,7 +1,7 @@
 .AppointmentItem {    
-    width: 60%;
-    display: inline-block; 
-    margin: 20px;
+    width: 80%;
+    display: inline-block;
+    margin: 5%;
     border: 2px dashed #8F5C2C;
     height: 210px;
     padding: 10px;

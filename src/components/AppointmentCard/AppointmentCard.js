@@ -13,7 +13,7 @@ const appointmentCard = props => (
             Email: <br />
             Number: <br />
           </div>
-          <div className='col-sm-3'>
+          <div id={'personInformation'} className='col-sm-3'>
             {props.info.name}
             <br />
             {props.info.lastName}
@@ -25,7 +25,7 @@ const appointmentCard = props => (
         </div>
       </div>
       <h6 className='card-subtitle mb-1 text-muted'>Selected dates: </h6>
-      {props.dates}
+      <span id={'selectedDates'}>{props.dates}</span>
       <div>
         <button
           type='button'

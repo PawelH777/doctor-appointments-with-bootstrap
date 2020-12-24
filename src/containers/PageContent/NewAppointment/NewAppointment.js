@@ -20,11 +20,12 @@ import {
   prepareAppointmentDateElement,
   prepareAppointmentsMap
 } from '../../../utilities/appointmentUtilities'
+import {determineFirstAvailableDay, findLastAvailableDate} from '../../../utilities/dateUtilties'
 import classes from './NewAppointment.module.css'
 
 class NewAppointment extends Component {
   state = {
-    date: new Date(),
+    date: determineFirstAvailableDay(),
     appointmentRange: {},
     dates: [],
     selectedDates: [],
@@ -66,6 +67,10 @@ class NewAppointment extends Component {
       date: date,
       dates: reservationFromCurrentDay
     })
+  }
+
+  disableWeekends = day => {
+    return day.getDay() === 0 || day.getDay() === 6 || day > findLastAvailableDate();
   }
 
   appointmentCauseChangeHandler = (event, selDate) => {
@@ -203,6 +208,8 @@ class NewAppointment extends Component {
                 label='Date picker inline'
                 value={this.state.date}
                 onChange={this.dateChangeHandler}
+                disablePast={true}
+                shouldDisableDate={this.disableWeekends}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
                 }}
