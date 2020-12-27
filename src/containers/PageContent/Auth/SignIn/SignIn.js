@@ -11,8 +11,7 @@ class SignIn extends Component {
     inputs: {
       email: new EmailDataModel(),
       password: new PasswordDataModel(false)
-    },
-    isFormValid: false
+    }
   }
 
   submitHandler = form => {

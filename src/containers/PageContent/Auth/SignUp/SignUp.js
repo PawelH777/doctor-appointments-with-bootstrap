@@ -21,8 +21,7 @@ class SignUp extends Component {
       number: new NumberDataModel(),
       password: new PasswordDataModel(true),
       repeatedPassword: new RepeatedPasswordDataModel()
-    },
-    isFormValid: false
+    }
   }
 
   submitHandler = form => {

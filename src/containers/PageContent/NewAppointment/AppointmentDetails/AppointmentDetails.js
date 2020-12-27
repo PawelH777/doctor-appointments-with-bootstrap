@@ -15,8 +15,7 @@ class AppointmentDetails extends Component {
       lastName: new LastNameDataModel(),
       email: new EmailDataModel(),
       number: new NumberDataModel()
-    },
-    isFormValid: false
+    }
   }
 
   submitHandler = form => {

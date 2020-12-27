@@ -72,12 +72,12 @@ const checkIsEmailRule = (validation, value) => {
 }
 
 const checkIsNumericRule = (validation, value) => {
-  const isNumericRule = validation.rules.isNumeric
-  if (isNumericRule) {
+  const isNumberRule = validation.rules.isNumber
+  if (isNumberRule) {
     const pattern = /^\d+$/
     const isNumeric = pattern.test(value)
     if (!isNumeric) {
-      validation.errors.push(isNumericRule.errorMessage)
+      validation.errors.push(isNumberRule.errorMessage)
       return false
     }
   }
