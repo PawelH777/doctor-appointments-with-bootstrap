@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import axios from '../../../axios-doctor-appointments'
-import SelectedDate from '../../../components/Appointment/Appointment'
+import Appointment from '../../../components/Appointment/Appointment'
 import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
 import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'
 import Spinner from '../../../components/Spinner/Spinner'
@@ -21,11 +21,30 @@ class Appointments extends Component {
       '&orderBy="userId"&equalTo="' +
       this.props.userId +
       '"'
-    axios
-      .get('/appointments.json' + queryParams)
-      .then(response =>
-        this.setState({ appointments: collectAppointments(response), loading: false })
-      )
+    axios.get('/appointments.json' + queryParams).then(response =>
+      this.setState({
+        appointments: this.collectAppointments(response),
+        loading: false
+      })
+    )
+  }
+
+  collectAppointments = response => {
+    const appointments = []
+    for (let key in response.data) {
+      appointments.push(this.buildAppointment(response.data[key], key))
+    }
+    return appointments
+  }
+
+  buildAppointment = (appointmentData, appointmentKey) => {
+    return {
+      id: appointmentKey,
+      information: appointmentData.personalInfo,
+      dates: {
+        ...appointmentData.selectedDates
+      }
+    }
   }
 
   removeReservedReservationHandler = appointmentKey => {
@@ -35,114 +54,93 @@ class Appointments extends Component {
       )
       .then(() => {
         this.setState({
-          appointments: filterAppointments(
-            this.state.appointments,
-            appointmentKey
-          )
+          appointments: this.filterAppointments(appointmentKey)
         })
       })
       .catch(error => console.log(error))
   }
 
+  filterAppointments = keyOfAppointmentToBeRemove => {
+    return this.state.appointments.filter(
+      app => app.id !== keyOfAppointmentToBeRemove
+    )
+  }
+
   render () {
-    const appointments = []
+    const appointmentCards = []
     let technicalKey = 0
     for (let appointmentKey in this.state.appointments) {
       const appointment = this.state.appointments[appointmentKey]
-      const reservedDates = createSelectedDateElements(
-          appointment.dates,
-          appointment.appointmentCauses,
-          technicalKey
+      const reservedDates = this.createSelectedDateElements(
+        appointment.dates,
+        technicalKey
       )
-      if(reservedDates.length === 0) {
+      if (reservedDates.length === 0) {
         continue
       }
       const appointmentCard = (
         <AppointmentCard
           key={appointmentKey}
+          appointmentId={appointment.id}
           info={appointment.information}
           dates={reservedDates}
           removeReservation={this.removeReservedReservationHandler}
-          appointmentId={appointment.id}
         />
       )
-      appointments.push(appointmentCard)
+      appointmentCards.push(appointmentCard)
     }
-    return createContent(appointments, this.state.loading)
+    return this.createContent(appointmentCards)
   }
-}
 
-const collectAppointments = response => {
-  const appointments = []
-  for (let key in response.data) {
-    appointments.push(buildAppointment(response.data[key], key))
-  }
-  return appointments
-}
-
-const buildAppointment = (appointmentData, appointmentKey) => {
-  return {
-    id: appointmentKey,
-    information: appointmentData.personalInfo,
-    dates: {
-      ...appointmentData.selectedDates
+  createSelectedDateElements = (selectedDates, technicalKey) => {
+    const selectedDatesElements = []
+    for (let dateKey in selectedDates) {
+      const date = this.parseToDate(selectedDates[dateKey])
+      const chosenAppointmentCause =
+        selectedDates[dateKey].selectedAppointmentCause
+      if (date < new Date()) {
+        continue
+      }
+      const formattedDate = (
+        <Appointment
+          key={technicalKey++}
+          editMode={false}
+          appointmentTerm={prepareAppointmentDateElement(
+            date.toLocaleDateString(),
+            date.getHours()
+          )}
+          selectedAppointmentCause={chosenAppointmentCause}
+        />
+      )
+      selectedDatesElements.push(formattedDate)
     }
+    return selectedDatesElements
   }
-}
 
-const filterAppointments = (appointments, keyOfAppointmentToBeRemove) => {
-  return appointments.filter(app => app.id !== keyOfAppointmentToBeRemove)
-}
-
-const createSelectedDateElements = (
-  selectedDates,
-  appointmentCauses,
-  technicalKey
-) => {
-  const selectedDatesElements = []
-  for (let dateKey in selectedDates) {
-    const date = parseToDate(selectedDates[dateKey])
-    const chosenAppointmentCause = selectedDates[dateKey].selectedAppointmentCause
-    if(date < new Date()){
-      continue
-    }
-    const formattedDate = (
-      <SelectedDate
-        key={technicalKey++}
-        editMode={false}
-        appointmentTerm={prepareAppointmentDateElement(date.toLocaleDateString(), date.getHours())}
-        appointmentCauses={appointmentCauses}
-        selectedAppointmentCause={chosenAppointmentCause}
-      />
-    )
-    selectedDatesElements.push(formattedDate)
-  }
-  return selectedDatesElements
-}
-
-const parseToDate = (selectedDate) => {
-  return new Date(
+  parseToDate = selectedDate => {
+    return new Date(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
       selectedDate.hour
-  )
-}
+    )
+  }
 
-const createContent = (appointments, loading) => {
-  if(!loading) {
-    if(appointments.length > 0){
-      return <div className={classes.Appointments}>{appointments}</div>
-    }
-    else {
-       return <div className='h2 align-self-center'>
+  createContent = appointmentCards => {
+    if (!this.state.loading) {
+      if (appointmentCards.length > 0) {
+        return <div className={classes.Appointments}>{appointmentCards}</div>
+      } else {
+        return (
+          <div className='h2 align-self-center'>
             No appointments! Please make a new one to view it there.
           </div>
+        )
+      }
     }
+    return <Spinner />
   }
-  return <Spinner />
 }
-
 
 const mapStateToProps = state => {
   return {

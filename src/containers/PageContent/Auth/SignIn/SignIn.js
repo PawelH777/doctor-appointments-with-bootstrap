@@ -17,7 +17,9 @@ class SignIn extends Component {
   submitHandler = form => {
     const email = form.email.attributes.value
     const password = form.password.attributes.value
-    this.props.onAuth(email, password).then(() => this.props.history.goBack())
+    this.props.onAuth(email, password).then(() => {
+      this.props.history.goBack()
+    })
   }
 
   render () {

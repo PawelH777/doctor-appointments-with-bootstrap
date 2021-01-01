@@ -45,7 +45,7 @@ class Contact extends Component {
           <Map />
         </div>
         <Divider orientation='vertical' flexItem />
-        <div className='w-50 mt-5 ml-5'>
+        <div id='authorInfo' className='w-50 mt-5 ml-5'>
           <h4>Doctor Pawel Hornik</h4>
           <h4>631-601 Morse Ave</h4>
           <h4>Sunnyvale, CA 94085</h4>

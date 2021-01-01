@@ -9,7 +9,7 @@ import Selector from './Selector'
 
 configure({ adapter: new Adapter() })
 
-describe('<Selector />', () => {
+describe('<Selector /> unit tests', () => {
   it('should render active selector with two choices', () => {
     // given
     const selectedCause = 'Test cause 1'

@@ -9,7 +9,7 @@ import NavBarForSmartphone from './NavBarForSmartphone'
 
 configure({ adapter: new Adapter() })
 
-describe('<NavBarForSmartphone />', () => {
+describe('<NavBarForSmartphone /> unit tests', () => {
   it('should render nav bar for smartphone for unauthenticated user', () => {
     // given
 

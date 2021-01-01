@@ -7,7 +7,7 @@ import Spinner from './Spinner'
 
 configure({ adapter: new Adapter() })
 
-describe('<Spinner />', () => {
+describe('<Spinner /> unit tests', () => {
   it('should render spinner', () => {
     // given
 

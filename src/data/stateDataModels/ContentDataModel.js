@@ -10,7 +10,7 @@ export class ContentDataModel {
     }
 
     this.attributes = {
-      id: 'Content',
+      id: 'content',
       type: 'textarea',
       placeholder: 'Content',
       value: '',

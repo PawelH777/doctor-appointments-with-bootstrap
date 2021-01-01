@@ -38,7 +38,35 @@ class SignUp extends Component {
       password: password,
       returnSecureToken: true
     }
-    registerUser(authData, personalInfo, this.props)
+    this.registerUser(authData, personalInfo)
+  }
+
+  registerUser = (authData, personalInfo) => {
+    axios
+      .post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDOLpcWn2ABinExUQ6BzuXFW0AjVITXM94',
+        authData
+      )
+      .then(() => {
+        this.createNewUser(personalInfo)
+        window.alert('New user has been signed up')
+      })
+      .catch(error => {
+        console.log(error)
+        window.alert('Critical error. Please do it again, now correctly')
+      })
+      .finally(() => this.props.history.goBack())
+  }
+
+  createNewUser = personalInfo => {
+    axiosAppointments
+      .post('/users.json', personalInfo)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   render () {
@@ -49,34 +77,6 @@ class SignUp extends Component {
       />
     )
   }
-}
-
-const registerUser = (authData, personalInfo, props) => {
-  axios
-    .post(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDOLpcWn2ABinExUQ6BzuXFW0AjVITXM94',
-      authData
-    )
-    .then(() => {
-      createNewUser(personalInfo)
-      window.alert('New user has been signed up')
-    })
-    .catch(error => {
-      console.log(error)
-      window.alert('Critical error. Please do it again, now correctly')
-    })
-    .finally(() => props.history.goBack())
-}
-
-const createNewUser = personalInfo => {
-  axiosAppointments
-    .post('/users.json', personalInfo)
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
 }
 
 export default withRouter(SignUp)

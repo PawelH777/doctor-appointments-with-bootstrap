@@ -1,0 +1,1 @@
+To run one test -> npm test -- -t name_of_the_test

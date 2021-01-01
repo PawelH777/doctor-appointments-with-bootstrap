@@ -9,7 +9,7 @@ import NavBarForDesktop from './NavBarForDesktop'
 
 configure({ adapter: new Adapter() })
 
-describe('<NavBarForDesktop />', () => {
+describe('<NavBarForDesktop /> unit tests', () => {
   it('should render nav bar for desktop for unauthenticated user', () => {
     // given
 
