@@ -14,19 +14,19 @@ const appointmentCard = props => (
             Number: <br />
           </div>
           <div id={'personInformation'} className='col-sm-3'>
-            {props.info.name}
+            {props.patientInfo.name}
             <br />
-            {props.info.lastName}
+            {props.patientInfo.lastName}
             <br />
-            {props.info.email}
+            {props.patientInfo.email}
             <br />
-            {props.info.number}
+            {props.patientInfo.number}
           </div>
         </div>
       </div>
-      <h6 className='card-subtitle mb-1 text-muted'>Selected dates: </h6>
-      <span id={'selectedDates'}>{props.dates}</span>
-      <div>
+      <h6 className='card-subtitle mb-1 text-muted'>Reserved appointments: </h6>
+      <span id={'selectedDates'}>{props.appointmentElements}</span>
+      <div className='mt-3 mb-3'>
         <button
           type='button'
           className='btn btn-danger w-50 h-25'

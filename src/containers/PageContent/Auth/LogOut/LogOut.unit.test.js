@@ -16,6 +16,9 @@ const initialState = {}
 const store = configureMockStore(initialState)
 
 describe('<Log out /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should redirect to /', async () => {
     // given
     store.dispatch = jest.fn()

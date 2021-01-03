@@ -7,8 +7,8 @@ import { MemoryRouter as Router } from 'react-router-dom'
 
 import SignIn from './SignIn'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
-import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
-import { PasswordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
+import { EmailDataModel } from '../../../../data/inputsDataModels/EmailDataModel'
+import { PasswordDataModel } from '../../../../data/inputsDataModels/PasswordDataModel'
 
 configure({ adapter: new Adapter() })
 
@@ -18,6 +18,9 @@ const initialState = {}
 const store = configureMockStore(initialState)
 
 describe('<SignIn /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render SignIn component', () => {
     // given
     store.dispatch = jest.fn()

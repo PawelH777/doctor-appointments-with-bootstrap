@@ -11,7 +11,7 @@ class Start extends Component {
     let actualPathToRedirect = '/login'
     let actualButtonLabel = 'LOG IN'
     if (this.props.isAuthenticated) {
-      actualPathToRedirect = '/new'
+      actualPathToRedirect = '/scheduler'
       actualButtonLabel = 'SCHEDULE THE MEETING'
     }
     this.setState({

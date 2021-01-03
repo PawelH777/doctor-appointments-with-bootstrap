@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import axios from '../../../axios-doctor-appointments'
+import classes from './Appointments.module.css'
 import Appointment from '../../../components/Appointment/Appointment'
 import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
-import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'
 import Spinner from '../../../components/Spinner/Spinner'
-import classes from './Appointments.module.css'
+import { prepareAppointmentDateElement } from '../../../utilities/appointmentUtilities'
+import axios from '../../../axios-doctor-appointments'
+import { AppointmentReservation } from '../../../data/dataStructures/AppointmentReservation'
 
 class Appointments extends Component {
   state = {
@@ -38,13 +39,11 @@ class Appointments extends Component {
   }
 
   buildAppointment = (appointmentData, appointmentKey) => {
-    return {
-      id: appointmentKey,
-      information: appointmentData.personalInfo,
-      dates: {
-        ...appointmentData.selectedDates
-      }
-    }
+    const appointment = new AppointmentReservation()
+    appointment.setId(appointmentKey)
+    appointment.setPatientInformation(appointmentData.patientInformation)
+    appointment.setReservedAppointments(appointmentData.reservedAppointments)
+    return appointment
   }
 
   removeReservedReservationHandler = appointmentKey => {
@@ -60,9 +59,9 @@ class Appointments extends Component {
       .catch(error => console.log(error))
   }
 
-  filterAppointments = keyOfAppointmentToBeRemove => {
+  filterAppointments = keyOfAppointmentToBeRemoved => {
     return this.state.appointments.filter(
-      app => app.id !== keyOfAppointmentToBeRemove
+      nextAppointment => nextAppointment.id !== keyOfAppointmentToBeRemoved
     )
   }
 
@@ -71,19 +70,19 @@ class Appointments extends Component {
     let technicalKey = 0
     for (let appointmentKey in this.state.appointments) {
       const appointment = this.state.appointments[appointmentKey]
-      const reservedDates = this.createSelectedDateElements(
-        appointment.dates,
+      const reservedAppointmentElements = this.createAppointmentsElements(
+        appointment.reservedAppointments,
         technicalKey
       )
-      if (reservedDates.length === 0) {
+      if (reservedAppointmentElements.length === 0) {
         continue
       }
       const appointmentCard = (
         <AppointmentCard
           key={appointmentKey}
           appointmentId={appointment.id}
-          info={appointment.information}
-          dates={reservedDates}
+          patientInfo={appointment.patientInformation}
+          appointmentElements={reservedAppointmentElements}
           removeReservation={this.removeReservedReservationHandler}
         />
       )
@@ -92,16 +91,16 @@ class Appointments extends Component {
     return this.createContent(appointmentCards)
   }
 
-  createSelectedDateElements = (selectedDates, technicalKey) => {
-    const selectedDatesElements = []
-    for (let dateKey in selectedDates) {
-      const date = this.parseToDate(selectedDates[dateKey])
-      const chosenAppointmentCause =
-        selectedDates[dateKey].selectedAppointmentCause
+  createAppointmentsElements = (reservedAppointments, technicalKey) => {
+    const reservedAppointmentElements = []
+    for (let appointmentKey in reservedAppointments) {
+      const date = this.parseToDate(reservedAppointments[appointmentKey])
+      const choosedAppointmentCause =
+        reservedAppointments[appointmentKey].selectedAppointmentCause
       if (date < new Date()) {
         continue
       }
-      const formattedDate = (
+      const appointmentElement = (
         <Appointment
           key={technicalKey++}
           editMode={false}
@@ -109,21 +108,16 @@ class Appointments extends Component {
             date.toLocaleDateString(),
             date.getHours()
           )}
-          selectedAppointmentCause={chosenAppointmentCause}
+          selectedAppointmentCause={choosedAppointmentCause}
         />
       )
-      selectedDatesElements.push(formattedDate)
+      reservedAppointmentElements.push(appointmentElement)
     }
-    return selectedDatesElements
+    return reservedAppointmentElements
   }
 
-  parseToDate = selectedDate => {
-    return new Date(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      selectedDate.hour
-    )
+  parseToDate = date => {
+    return new Date(date.year, date.month, date.day, date.hour)
   }
 
   createContent = appointmentCards => {

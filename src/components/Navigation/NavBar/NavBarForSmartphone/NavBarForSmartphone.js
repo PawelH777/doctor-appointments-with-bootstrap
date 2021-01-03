@@ -16,7 +16,7 @@ const navBarForSmartphone = props => (
           <NavLink className='nav-item nav-link' to='/appointments'>
             Appointments
           </NavLink>
-          <NavLink className='nav-item nav-link' to='/new'>
+          <NavLink className='nav-item nav-link' to='/scheduler'>
             New Appointment
           </NavLink>
           <Divider orientation='vertical' flexItem />

@@ -1,8 +1,8 @@
 import React from 'react'
 import { configure, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { MemoryRouter as Router } from 'react-router-dom'
 import Divider from '@material-ui/core/Divider'
+import flushPromises from 'flush-promises'
 
 import Contact from './Contact'
 import Form from '../../Form/Form'
@@ -17,6 +17,10 @@ configure({ adapter: new Adapter() })
 jest.mock('../../../axios-doctor-appointments')
 
 describe('<Contact /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should render Contact component', () => {
     // given
 
@@ -56,58 +60,12 @@ describe('<Contact /> unit tests', () => {
     expect(actualPassedInputs.content).toMatchObject(new ContentDataModel())
   })
 
-  // it('should submit message method be performed correctly without errors', async () => {
-  //   // given
-  //   window.alert = jest.fn()
-  //   window.location.reload = jest.fn()
-
-  //   axios.post.mockImplementation(() => Promise.resolve())
-
-  //   const submitMethodArguments = {
-  //     email: {
-  //       attributes: {
-  //         value: 'Email test value'
-  //       }
-  //     },
-  //     title: {
-  //       attributes: {
-  //         value: 'Title test value'
-  //       }
-  //     },
-  //     content: {
-  //       attributes: {
-  //         value: 'Content test value'
-  //       }
-  //     }
-  //   }
-
-  //   // when
-  //   const wrapper = mount(<Contact />)
-  //   await wrapper
-  //     .find(Form)
-  //     .props()
-  //     .submitted(submitMethodArguments)
-
-  //   // then
-  //   expect(axios.post).toHaveBeenCalledTimes(1)
-  //   expect(axios.post).toHaveBeenCalledWith('/messages.json', {
-  //     content: 'Content test value',
-  //     email: 'Email test value',
-  //     title: 'Title test value'
-  //   })
-
-  //   expect(window.alert).toHaveBeenCalledTimes(1)
-  //   expect(window.alert).toHaveBeenCalledWith('Message has been send.')
-  //   expect(window.location.reload).toHaveBeenCalledTimes(1)
-  // })
-
-  it('should submit message method be performed correctly but with error', async () => {
+  it('should submit message method be performed correctly without errors', async () => {
     // given
     window.alert = jest.fn()
-    console.log = jest.fn()
     window.location.reload = jest.fn()
 
-    axios.post.mockImplementation(() => Promise.reject('400 Error'))
+    axios.post.mockImplementation(() => Promise.resolve())
 
     const submitMethodArguments = {
       email: {
@@ -142,13 +100,60 @@ describe('<Contact /> unit tests', () => {
       title: 'Title test value'
     })
 
-    // expect(console.log).toHaveBeenCalledTimes(1)
-    // expect(console.log).toHaveBeenCalledWith('400 Error')
+    expect(window.alert).toHaveBeenCalledTimes(1)
+    expect(window.alert).toHaveBeenCalledWith('Message has been send.')
+    expect(window.location.reload).toHaveBeenCalledTimes(1)
+  })
 
-    // expect(window.alert).toHaveBeenCalledTimes(1)
-    // expect(window.alert).toHaveBeenCalledWith(
-    //   "Message couldn't be sent because of the issue."
-    // )
-    // expect(window.location.reload).toHaveBeenCalledTimes(1)
+  it('should submit message method be performed correctly but with error', async () => {
+    // given
+    window.alert = jest.fn()
+    window.location.reload = jest.fn()
+    console.log = jest.fn()
+
+    axios.post.mockImplementation(() => Promise.reject('400 Error'))
+
+    const submitMethodArguments = {
+      email: {
+        attributes: {
+          value: 'Email test value'
+        }
+      },
+      title: {
+        attributes: {
+          value: 'Title test value'
+        }
+      },
+      content: {
+        attributes: {
+          value: 'Content test value'
+        }
+      }
+    }
+
+    // when
+    const wrapper = mount(<Contact />)
+    await wrapper
+      .find(Form)
+      .props()
+      .submitted(submitMethodArguments)
+    await flushPromises(setImmediate)
+
+    // then
+    expect(axios.post).toHaveBeenCalledTimes(1)
+    expect(axios.post).toHaveBeenCalledWith('/messages.json', {
+      content: 'Content test value',
+      email: 'Email test value',
+      title: 'Title test value'
+    })
+
+    expect(console.log).toHaveBeenCalledTimes(1)
+    expect(console.log).toHaveBeenCalledWith('400 Error')
+
+    expect(window.alert).toHaveBeenCalledTimes(1)
+    expect(window.alert).toHaveBeenCalledWith(
+      "Message couldn't be sent because of the issue."
+    )
+    expect(window.location.reload).toHaveBeenCalledTimes(1)
   })
 })

@@ -102,6 +102,9 @@ const FIFTH_RESERVED_DATE = {
 }
 
 describe('<Appointments /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render appointments', async () => {
     // given
     const mockResponse = {

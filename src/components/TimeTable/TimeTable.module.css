@@ -1,10 +1,3 @@
-.TimeTable {
-  margin-top: 5%;
-  width: 70%;
-  display: inline-block;
-  align-self: start;
-}
-
 .ListWrapper {
   height: 50vh;
   overflow: auto;

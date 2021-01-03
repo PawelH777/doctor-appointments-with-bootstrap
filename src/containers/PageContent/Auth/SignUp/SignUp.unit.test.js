@@ -6,12 +6,12 @@ import axios from 'axios'
 
 import SignUp from './SignUp'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
-import { NameDataModel } from '../../../../data/stateDataModels/NameDataModel'
-import { LastNameDataModel } from '../../../../data/stateDataModels/LastNameDataModel'
-import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
-import { NumberDataModel } from '../../../../data/stateDataModels/NumberDataModel'
-import { PasswordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
-import { RepeatedPasswordDataModel } from '../../../../data/stateDataModels/RepeatedPasswordDataModel'
+import { NameDataModel } from '../../../../data/inputsDataModels/NameDataModel'
+import { LastNameDataModel } from '../../../../data/inputsDataModels/LastNameDataModel'
+import { EmailDataModel } from '../../../../data/inputsDataModels/EmailDataModel'
+import { NumberDataModel } from '../../../../data/inputsDataModels/NumberDataModel'
+import { PasswordDataModel } from '../../../../data/inputsDataModels/PasswordDataModel'
+import { RepeatedPasswordDataModel } from '../../../../data/inputsDataModels/RepeatedPasswordDataModel'
 import axiosAppointments from '../../../../axios-doctor-appointments'
 
 configure({ adapter: new Adapter() })
@@ -20,6 +20,9 @@ jest.mock('../../../../axios-doctor-appointments')
 jest.mock('axios')
 
 describe('<SignUp /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render SignUp component', () => {
     // given
 

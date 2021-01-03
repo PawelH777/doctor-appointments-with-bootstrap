@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 import Divider from '@material-ui/core/Divider'
 
 import axios from '../../../axios-doctor-appointments'
-import { EmailDataModel } from '../../../data/stateDataModels/EmailDataModel'
-import { ContentDataModel } from '../../../data/stateDataModels/ContentDataModel'
-import { TitleDataModel } from '../../../data/stateDataModels/TitleDataModel'
+import { EmailDataModel } from '../../../data/inputsDataModels/EmailDataModel'
+import { ContentDataModel } from '../../../data/inputsDataModels/ContentDataModel'
+import { TitleDataModel } from '../../../data/inputsDataModels/TitleDataModel'
 import Form from '../../Form/Form'
 import Map from '../../../components/Map/Map'
 

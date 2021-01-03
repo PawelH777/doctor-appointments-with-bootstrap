@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { EmailDataModel } from '../../../../data/stateDataModels/EmailDataModel'
-import { PasswordDataModel } from '../../../../data/stateDataModels/PasswordDataModel'
+import { EmailDataModel } from '../../../../data/inputsDataModels/EmailDataModel'
+import { PasswordDataModel } from '../../../../data/inputsDataModels/PasswordDataModel'
 import * as actions from '../../../../store/actions/auth'
 import FormWithShadow from '../../../../components/FormWithShadow/FormWithShadow'
 

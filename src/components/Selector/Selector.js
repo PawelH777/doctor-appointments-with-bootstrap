@@ -24,7 +24,6 @@ const selector = props => {
       <Select
         id='appointment-cause'
         labelId='appointment-cause-label'
-        disabled={props.disabled}
         value={props.selectedAppointmentCause}
         onChange={props.appointmentCauseChanged}
       >

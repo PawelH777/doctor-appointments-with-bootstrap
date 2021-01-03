@@ -48,7 +48,7 @@ describe('<NavBarForSmartphone /> unit tests', () => {
     })
     expect(directions).toContain('/home')
     expect(directions).toContain('/appointments')
-    expect(directions).toContain('/new')
+    expect(directions).toContain('/scheduler')
     expect(directions).toContain('/logout')
     expect(directions).toContain('/contact')
   })

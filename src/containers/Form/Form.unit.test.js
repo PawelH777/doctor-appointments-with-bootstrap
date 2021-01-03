@@ -11,6 +11,9 @@ import { PasswordDataModel } from '../../data/stateDataModels/PasswordDataModel'
 configure({ adapter: new Adapter() })
 
 describe('<Form /> unit tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render form with number and content inputs with disabled button', () => {
     // given
     const contentModel = new ContentDataModel()
