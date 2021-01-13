@@ -24,7 +24,6 @@
     "react-responsive": "^8.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-test-renderer": "^17.0.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"
   },

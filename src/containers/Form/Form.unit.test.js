@@ -4,9 +4,9 @@ import Adapter from 'enzyme-adapter-react-16'
 
 import Form from './Form'
 import FormInput from '../../components/FormInput/FormInput'
-import { NumberDataModel } from '../../data/stateDataModels/NumberDataModel'
-import { ContentDataModel } from '../../data/stateDataModels/ContentDataModel'
-import { PasswordDataModel } from '../../data/stateDataModels/PasswordDataModel'
+import { NumberDataModel } from '../../data/inputsDataModels/NumberDataModel'
+import { ContentDataModel } from '../../data/inputsDataModels/ContentDataModel'
+import { PasswordDataModel } from '../../data/inputsDataModels/PasswordDataModel'
 
 configure({ adapter: new Adapter() })
 

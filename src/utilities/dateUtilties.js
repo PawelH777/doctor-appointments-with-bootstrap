@@ -14,6 +14,8 @@ export const collectDates = reservedAppointments => {
   return reservedDates
 }
 
+/////////////////////////////////////
+// This can't be tested unfortunately
 export const determineFirstAvailableDay = () => {
   let curDate = new Date()
   if (curDate.getHours() >= datesConstants.CLOSING_HOUR) {
@@ -46,6 +48,8 @@ export const collectOnlyCurrentProcessedDayDates = (selectedDates, curDate) => {
   )
 }
 
+/////////////////////////////////////
+// This can't be tested unfortunately
 export const findLastAvailableDate = () => {
   let curDate = determineFirstAvailableDay()
   for (
@@ -58,6 +62,7 @@ export const findLastAvailableDate = () => {
   }
   return curDate
 }
+
 export const dateIsToday = date => {
   const today = new Date()
   return date.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)

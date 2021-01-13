@@ -10,42 +10,43 @@ import ListItemText from '@material-ui/core/ListItemText'
 
 configure({ adapter: new Adapter() })
 
+const EXPECTED_PAPER_CSS_PROP = 'paperCss'
+const EXPECTED_IS_BUTTON_PROP = true
+const EXPECTED_IS_DISABLED_PROP = false
+const EXPECTED_ON_CLICK_PROP = () => true
+const EXPECTED_PRIMARY_PROP = 'Primary text'
+const EXPECTED_SECONDARY_PROP = 'Secondary text'
+
 describe('<ListItem /> unit tests', () => {
   it('should render list item with passing correct values', () => {
     // given
-    const expectedPaperCssProp = 'paperCss'
-    const expectedIsButtonProp = true
-    const expectedIsDisabledProp = false
-    const expectedOnClickProp = () => true
-    const expectedPrimaryProp = 'Primary text'
-    const expectedSecondaryProp = 'Secondary text'
 
     // when
     const wrapper = shallow(
       <ListItemCustom
-        paperCss={expectedPaperCssProp}
-        isButton={expectedIsButtonProp}
-        isDisabled={expectedIsDisabledProp}
-        clicked={expectedOnClickProp}
-        primary={expectedPrimaryProp}
-        secondary={expectedSecondaryProp}
+        paperCss={EXPECTED_PAPER_CSS_PROP}
+        isButton={EXPECTED_IS_BUTTON_PROP}
+        isDisabled={EXPECTED_IS_DISABLED_PROP}
+        clicked={EXPECTED_ON_CLICK_PROP}
+        primary={EXPECTED_PRIMARY_PROP}
+        secondary={EXPECTED_SECONDARY_PROP}
       />
     )
 
     // then
     const actualPaperElement = wrapper.find(Paper)
     expect(actualPaperElement).toBeDefined()
-    expect(actualPaperElement.prop('className')).toBe(expectedPaperCssProp)
+    expect(actualPaperElement.prop('className')).toBe(EXPECTED_PAPER_CSS_PROP)
 
     const actualListItem = actualPaperElement.find(ListItem)
     expect(actualListItem).toBeDefined()
-    expect(actualListItem.prop('button')).toBe(expectedIsButtonProp)
-    expect(actualListItem.prop('disabled')).toBe(expectedIsDisabledProp)
-    expect(actualListItem.prop('onClick')).toBe(expectedOnClickProp)
+    expect(actualListItem.prop('button')).toBe(EXPECTED_IS_BUTTON_PROP)
+    expect(actualListItem.prop('disabled')).toBe(EXPECTED_IS_DISABLED_PROP)
+    expect(actualListItem.prop('onClick')).toBe(EXPECTED_ON_CLICK_PROP)
 
     const actualListItemText = actualListItem.find(ListItemText)
     expect(actualListItemText).toBeDefined()
-    expect(actualListItemText.prop('primary')).toBe(expectedPrimaryProp)
-    expect(actualListItemText.prop('secondary')).toBe(expectedSecondaryProp)
+    expect(actualListItemText.prop('primary')).toBe(EXPECTED_PRIMARY_PROP)
+    expect(actualListItemText.prop('secondary')).toBe(EXPECTED_SECONDARY_PROP)
   })
 })

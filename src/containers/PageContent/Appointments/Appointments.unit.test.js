@@ -1,9 +1,9 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import { configure, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import configureStore from 'redux-mock-store'
 
-import axios from '../../../axios-doctor-appointments'
 import Appointments from './Appointments'
 import AppointmentCard from '../../../components/AppointmentCard/AppointmentCard'
 import Appointment from '../../../components/Appointment/Appointment'
@@ -12,6 +12,7 @@ import {
   FAMILY_DOCTOR_CONSULTATION,
   ONLINE_CONSULTATION
 } from '../../../data/constants/AppointmentCausesConstants'
+import axios from '../../../axios-doctor-appointments'
 
 configure({ adapter: new Adapter() })
 
@@ -28,7 +29,7 @@ const store = configureMockStore(initialState)
 
 jest.mock('../../../axios-doctor-appointments')
 
-const PERSONAL_INFO = {
+const EXPECTED_PATIENT_INFO = {
   email: 'pawel.jan.hornik@gmail.com',
   lastName: 'Hornik',
   name: 'Paweł',
@@ -42,64 +43,73 @@ const currentDatePlusOneDay = new Date(
 const currentDatePlusOneMonth = new Date(
   new Date().setDate(new Date().getDate() + 30)
 )
+
 const currentDateMinusOneDay = new Date(
   new Date().setDate(new Date().getDate() - 1)
 )
 
-const FIRST_RESERVED_DATE = {
-  date: currentDatePlusOneDay.toLocaleDateString(),
-  day: currentDatePlusOneDay.getDate(),
-  hour: 10,
+const EXPECTED_FIRST_RESERVED_DATE = {
   id: '1' + currentDatePlusOneDay.toLocaleDateString(),
-  isReserved: true,
+  hour: 10,
+  day: currentDatePlusOneDay.getDate(),
   month: currentDatePlusOneDay.getMonth(),
-  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION,
-  year: currentDatePlusOneDay.getFullYear()
+  year: currentDatePlusOneDay.getFullYear(),
+  date: currentDatePlusOneDay.toLocaleDateString(),
+  isReserved: true,
+  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION
 }
 
-const SECOND_RESERVED_DATE = {
-  date: currentDatePlusOneDay.toLocaleDateString(),
-  day: currentDatePlusOneDay.getDate(),
+const EXPECTED_SECOND_RESERVED_DATE = {
+  id: '1' + currentDatePlusOneDay.toLocaleDateString(),
   hour: 11,
-  id: '1' + currentDatePlusOneDay.toLocaleDateString(),
-  isReserved: true,
+  day: currentDatePlusOneDay.getDate(),
   month: currentDatePlusOneDay.getMonth(),
-  selectedAppointmentCause: FAMILY_DOCTOR_CONSULTATION,
-  year: currentDatePlusOneDay.getFullYear()
+  year: currentDatePlusOneDay.getFullYear(),
+  date: currentDatePlusOneDay.toLocaleDateString(),
+  isReserved: true,
+  selectedAppointmentCause: FAMILY_DOCTOR_CONSULTATION
 }
 
-const THIRD_RESERVED_DATE = {
-  date: currentDatePlusOneMonth.toLocaleDateString(),
-  day: currentDatePlusOneMonth.getDate(),
-  hour: 10,
+const EXPECTED_THIRD_RESERVED_DATE = {
   id: '2' + currentDatePlusOneMonth.toLocaleDateString(),
-  isReserved: true,
-  month: currentDatePlusOneMonth.getMonth(),
-  selectedAppointmentCause: ONLINE_CONSULTATION,
-  year: currentDatePlusOneMonth.getFullYear()
-}
-
-const FOURTH_RESERVED_DATE = {
-  date: currentDateMinusOneDay.toLocaleDateString(),
-  day: currentDateMinusOneDay.getDate(),
   hour: 10,
-  id: '1' + currentDateMinusOneDay.toLocaleDateString(),
+  day: currentDatePlusOneMonth.getDate(),
+  month: currentDatePlusOneMonth.getMonth(),
+  year: currentDatePlusOneMonth.getFullYear(),
+  date: currentDatePlusOneMonth.toLocaleDateString(),
   isReserved: true,
-  month: currentDateMinusOneDay.getMonth(),
-  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION,
-  year: currentDateMinusOneDay.getFullYear()
+  selectedAppointmentCause: ONLINE_CONSULTATION
 }
 
-const FIFTH_RESERVED_DATE = {
-  date: currentDateMinusOneDay.toLocaleDateString(),
-  day: currentDateMinusOneDay.getDate(),
-  hour: 11,
+const EXPECTED_FOURTH_RESERVED_DATE = {
   id: '1' + currentDateMinusOneDay.toLocaleDateString(),
-  isReserved: true,
+  hour: 10,
+  day: currentDateMinusOneDay.getDate(),
   month: currentDateMinusOneDay.getMonth(),
-  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION,
-  year: currentDateMinusOneDay.getFullYear()
+  year: currentDateMinusOneDay.getFullYear(),
+  date: currentDateMinusOneDay.toLocaleDateString(),
+  isReserved: true,
+  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION
 }
+
+const EXPECTED_FIFTH_RESERVED_DATE = {
+  id: '1' + currentDateMinusOneDay.toLocaleDateString(),
+  hour: 11,
+  day: currentDateMinusOneDay.getDate(),
+  month: currentDateMinusOneDay.getMonth(),
+  year: currentDateMinusOneDay.getFullYear(),
+  date: currentDateMinusOneDay.toLocaleDateString(),
+  isReserved: true,
+  selectedAppointmentCause: INTERNAL_MEDICINE_CONSULTATION
+}
+
+const EXPECTED_FIRST_APPOINTMENT_ID = 'first'
+const EXPECTED_SECOND_APPOINTMENT_ID = 'second'
+
+const EXPECTED_WRAPPER_TEXT_WHEN_NO_APPOINTMENTS =
+  'No appointments! Please make a new one to view it there.'
+
+const EXPECTED_WRAPPER_TEXT_WHEN_IS_LOADING = 'Loading...'
 
 describe('<Appointments /> unit tests', () => {
   afterEach(() => {
@@ -110,26 +120,28 @@ describe('<Appointments /> unit tests', () => {
     const mockResponse = {
       data: {
         first: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FIRST_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FIRST_RESERVED_DATE
           }
         },
         second: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: SECOND_RESERVED_DATE,
-            1: THIRD_RESERVED_DATE
-          }
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: [
+            EXPECTED_SECOND_RESERVED_DATE,
+            EXPECTED_THIRD_RESERVED_DATE
+          ]
         }
       }
     }
     axios.get.mockImplementation(() => Promise.resolve(mockResponse))
-    const expectedFirstAppointmentId = 'first'
-    const expectedSecondAppointmentId = 'second'
 
     // when
-    const wrapper = mount(<Appointments store={store} />)
+    const wrapper = mount(
+      <Provider store={store}>
+        <Appointments />
+      </Provider>
+    )
     await wrapper.update()
     wrapper.update()
 
@@ -140,14 +152,18 @@ describe('<Appointments /> unit tests', () => {
     // First Appointment Card
     const actualFirstAppointmentCardElement = actualAppointmentCardElement.filterWhere(
       appointmentCard =>
-        appointmentCard.prop('appointmentId') === expectedFirstAppointmentId
+        appointmentCard.prop('appointmentId') === EXPECTED_FIRST_APPOINTMENT_ID
     )
     expect(actualFirstAppointmentCardElement).toHaveLength(1)
     expect(actualFirstAppointmentCardElement.prop('appointmentId')).toBe(
-      expectedFirstAppointmentId
+      EXPECTED_FIRST_APPOINTMENT_ID
     )
-    expect(actualFirstAppointmentCardElement.prop('info')).toBe(PERSONAL_INFO)
-    expect(actualFirstAppointmentCardElement.prop('dates')).toBeDefined()
+    expect(actualFirstAppointmentCardElement.prop('patientInfo')).toBe(
+      EXPECTED_PATIENT_INFO
+    )
+    expect(
+      actualFirstAppointmentCardElement.prop('appointmentElements')
+    ).toBeDefined()
     expect(
       actualFirstAppointmentCardElement.prop('removeReservation')
     ).toBeDefined()
@@ -172,14 +188,18 @@ describe('<Appointments /> unit tests', () => {
     // Second Appointment Card
     const actualSecondAppointmentCardElement = actualAppointmentCardElement.filterWhere(
       appointmentCard =>
-        appointmentCard.prop('appointmentId') === expectedSecondAppointmentId
+        appointmentCard.prop('appointmentId') === EXPECTED_SECOND_APPOINTMENT_ID
     )
     expect(actualSecondAppointmentCardElement).toHaveLength(1)
     expect(actualSecondAppointmentCardElement.prop('appointmentId')).toBe(
-      expectedSecondAppointmentId
+      EXPECTED_SECOND_APPOINTMENT_ID
     )
-    expect(actualSecondAppointmentCardElement.prop('info')).toBe(PERSONAL_INFO)
-    expect(actualSecondAppointmentCardElement.prop('dates')).toBeDefined()
+    expect(actualSecondAppointmentCardElement.prop('patientInfo')).toBe(
+      EXPECTED_PATIENT_INFO
+    )
+    expect(
+      actualSecondAppointmentCardElement.prop('appointmentElements')
+    ).toBeDefined()
     expect(
       actualSecondAppointmentCardElement.prop('removeReservation')
     ).toBeDefined()
@@ -207,15 +227,15 @@ describe('<Appointments /> unit tests', () => {
     const mockResponse = {
       data: {
         first: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FOURTH_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FOURTH_RESERVED_DATE
           }
         },
         second: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FIFTH_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FIFTH_RESERVED_DATE
           }
         }
       }
@@ -223,7 +243,11 @@ describe('<Appointments /> unit tests', () => {
     axios.get.mockImplementation(() => Promise.resolve(mockResponse))
 
     // when
-    const wrapper = mount(<Appointments store={store} />)
+    const wrapper = mount(
+      <Provider store={store}>
+        <Appointments />
+      </Provider>
+    )
     await wrapper.update()
     wrapper.update()
 
@@ -231,9 +255,7 @@ describe('<Appointments /> unit tests', () => {
     const actualAppointmentCardElement = wrapper.find(AppointmentCard)
     expect(actualAppointmentCardElement).toHaveLength(0)
 
-    expect(wrapper.text()).toBe(
-      'No appointments! Please make a new one to view it there.'
-    )
+    expect(wrapper.text()).toBe(EXPECTED_WRAPPER_TEXT_WHEN_NO_APPOINTMENTS)
   })
 
   it('should render spinner as the async code is not finished', async () => {
@@ -241,15 +263,15 @@ describe('<Appointments /> unit tests', () => {
     const mockResponse = {
       data: {
         first: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FOURTH_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FOURTH_RESERVED_DATE
           }
         },
         second: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FIFTH_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FIFTH_RESERVED_DATE
           }
         }
       }
@@ -257,11 +279,15 @@ describe('<Appointments /> unit tests', () => {
     axios.get.mockImplementation(() => Promise.resolve(mockResponse))
 
     // when
-    const wrapper = mount(<Appointments store={store} />)
+    const wrapper = mount(
+      <Provider store={store}>
+        <Appointments />
+      </Provider>
+    )
     wrapper.update() // component contains async code that'll be executed after the assertions
 
     // then
-    expect(wrapper.text()).toBe('Loading...')
+    expect(wrapper.text()).toBe(EXPECTED_WRAPPER_TEXT_WHEN_IS_LOADING)
   })
 
   it('should remove appointments', async () => {
@@ -269,16 +295,16 @@ describe('<Appointments /> unit tests', () => {
     const mockResponse = {
       data: {
         first: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: FIRST_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_FIRST_RESERVED_DATE
           }
         },
         second: {
-          personalInfo: PERSONAL_INFO,
-          selectedDates: {
-            0: SECOND_RESERVED_DATE,
-            1: THIRD_RESERVED_DATE
+          patientInformation: EXPECTED_PATIENT_INFO,
+          reservedAppointments: {
+            0: EXPECTED_SECOND_RESERVED_DATE,
+            1: EXPECTED_THIRD_RESERVED_DATE
           }
         }
       }
@@ -287,7 +313,11 @@ describe('<Appointments /> unit tests', () => {
     axios.delete.mockImplementation(() => Promise.resolve())
 
     // when
-    const wrapper = mount(<Appointments store={store} />)
+    const wrapper = mount(
+      <Provider store={store}>
+        <Appointments />
+      </Provider>
+    )
     await wrapper.update()
     wrapper.update()
     expect(wrapper.find(AppointmentCard)).toHaveLength(2)
@@ -311,8 +341,6 @@ describe('<Appointments /> unit tests', () => {
 
     // then
     expect(wrapper.find(AppointmentCard)).toHaveLength(0)
-    expect(wrapper.text()).toBe(
-      'No appointments! Please make a new one to view it there.'
-    )
+    expect(wrapper.text()).toBe(EXPECTED_WRAPPER_TEXT_WHEN_NO_APPOINTMENTS)
   })
 })

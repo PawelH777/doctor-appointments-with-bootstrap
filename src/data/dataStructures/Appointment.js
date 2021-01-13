@@ -37,6 +37,6 @@ export class Appointment {
   }
 
   setSelectedAppointmentCause (cause) {
-    this.selectedAppointmentCause(cause)
+    this.selectedAppointmentCause = cause
   }
 }

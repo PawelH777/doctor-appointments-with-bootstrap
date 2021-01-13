@@ -1,70 +1,111 @@
 import React from 'react'
-
 import { configure, shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
 import FormInput from './FormInput'
-import { NameDataModel } from '../../data/stateDataModels/NameDataModel'
-import { ContentDataModel } from '../../data/stateDataModels/ContentDataModel'
-import { NumberDataModel } from '../../data/stateDataModels/NumberDataModel'
+import { NameDataModel } from '../../data/inputsDataModels/NameDataModel'
+import { ContentDataModel } from '../../data/inputsDataModels/ContentDataModel'
+import { NumberDataModel } from '../../data/inputsDataModels/NumberDataModel'
 
 configure({ adapter: new Adapter() })
 
+const EXPECTED_NAME_LABEL_PROPERTIES = new NameDataModel().label
+const EXPECTED_NAME_ATTRIBUTES_PROPERTIES = new NameDataModel().attributes
+
+const EXPECTED_CONTENT_LABEL_PROPERTIES = new ContentDataModel().label
+const EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES = new ContentDataModel().attributes
+
+const numberRules = new NumberDataModel().validation.rules
+const EXPECTED_IS_NUMBER_ERROR_MESSAGE = numberRules.isNumber.errorMessage
+const EXPECTED_MAX_LENGTH_ERROR_MESSAGE = numberRules.maxLength.errorMessage
+const EXPECTED_MIN_LENGTH_ERROR_MESSAGE = numberRules.minLength.errorMessage
+const EXPECTED_REQUIRED_ERROR_MESSAGE = numberRules.required.errorMessage
+
 describe('<FormInput /> unit tests', () => {
-  it('should render input without errors', () => {
+  it('should render input without errors and working change handler', () => {
     // given
-    // Name is one of the data models characterizing the input element
-    const nameLabel = new NameDataModel().label
-    const nameAttributes = new NameDataModel().attributes
-
-    // when
-    const wrapper = shallow(
-      <FormInput label={nameLabel} attributes={nameAttributes} errors={[]} />
-    )
-
-    // then
-    const actualInput = wrapper.find('input#' + nameAttributes.id)
-    expect(actualInput).toBeDefined()
-    expect(actualInput.prop('type')).toBe(nameAttributes.type)
-    expect(actualInput.prop('placeholder')).toBe(nameAttributes.placeholder)
-    expect(actualInput.prop('value')).toBe(nameAttributes.value)
-    expect(actualInput.prop('className')).toBe('form-control')
-  })
-
-  it('should render textarea without errors', () => {
-    // given
-    // Content is one of the data models characterizing the textarea element
-    const contentLabel = new ContentDataModel().label
-    const contentAttributes = new ContentDataModel().attributes
+    const mockedValueChangedHandler = jest.fn()
 
     // when
     const wrapper = shallow(
       <FormInput
-        label={contentLabel}
-        attributes={contentAttributes}
+        label={EXPECTED_NAME_LABEL_PROPERTIES}
+        attributes={EXPECTED_NAME_ATTRIBUTES_PROPERTIES}
         errors={[]}
+        valueChanged={mockedValueChangedHandler}
       />
     )
 
     // then
-    const actualInput = wrapper.find('textarea#' + contentAttributes.id)
+    const actualInput = wrapper.find(
+      'input#' + EXPECTED_NAME_ATTRIBUTES_PROPERTIES.id
+    )
     expect(actualInput).toBeDefined()
-    expect(actualInput.prop('rows')).toBe(contentAttributes.rows)
-    expect(actualInput.prop('placeholder')).toBe(contentAttributes.placeholder)
-    expect(actualInput.prop('value')).toBe(contentAttributes.value)
-    expect(actualInput.prop('className')).toBe('form-control')
+    expect(actualInput.prop('type')).toBe(
+      EXPECTED_NAME_ATTRIBUTES_PROPERTIES.type
+    )
+    expect(actualInput.prop('placeholder')).toBe(
+      EXPECTED_NAME_ATTRIBUTES_PROPERTIES.placeholder
+    )
+    expect(actualInput.prop('value')).toBe(
+      EXPECTED_NAME_ATTRIBUTES_PROPERTIES.value
+    )
+    expect(actualInput.prop('onChange')).toBeDefined()
+
+    const actualLabel = wrapper.find('label')
+    expect(actualLabel).toBeDefined()
+    expect(actualLabel.prop('htmlFor')).toBe(EXPECTED_NAME_LABEL_PROPERTIES.for)
+    expect(actualLabel.text()).toBe(EXPECTED_NAME_LABEL_PROPERTIES.value)
+  })
+
+  it('should render textarea without errors', () => {
+    // given
+
+    const mockedValueChangedHandler = jest.fn()
+
+    // when
+    const wrapper = shallow(
+      <FormInput
+        label={EXPECTED_CONTENT_LABEL_PROPERTIES}
+        attributes={EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES}
+        errors={[]}
+        valueChanged={mockedValueChangedHandler}
+      />
+    )
+
+    // then
+    const actualTextarea = wrapper.find(
+      'textarea#' + EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES.id
+    )
+    expect(actualTextarea).toBeDefined()
+    expect(actualTextarea.prop('rows')).toBe(
+      EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES.rows
+    )
+    expect(actualTextarea.prop('placeholder')).toBe(
+      EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES.placeholder
+    )
+    expect(actualTextarea.prop('value')).toBe(
+      EXPECTED_CONTENT_ATTRIBUTES_PROPERTIES.value
+    )
+    expect(actualTextarea.prop('onChange')).toBeDefined()
+
+    const actualLabel = wrapper.find('label')
+    expect(actualLabel).toBeDefined()
+    expect(actualLabel.prop('htmlFor')).toBe(
+      EXPECTED_CONTENT_LABEL_PROPERTIES.for
+    )
+    expect(actualLabel.text()).toBe(EXPECTED_CONTENT_LABEL_PROPERTIES.value)
   })
 
   it('should render input with errors', () => {
     // given
     const numberLabel = new NumberDataModel().label
     const numberAttributes = new NumberDataModel().attributes
-    const numberRules = new NumberDataModel().validation.rules
     const numberErrors = [
-      numberRules.isNumber.errorMessage,
-      numberRules.maxLength.errorMessage,
-      numberRules.minLength.errorMessage,
-      numberRules.required.errorMessage
+      EXPECTED_IS_NUMBER_ERROR_MESSAGE,
+      EXPECTED_MAX_LENGTH_ERROR_MESSAGE,
+      EXPECTED_MIN_LENGTH_ERROR_MESSAGE,
+      EXPECTED_REQUIRED_ERROR_MESSAGE
     ]
 
     // when
@@ -85,9 +126,9 @@ describe('<FormInput /> unit tests', () => {
       actualErrorMessages.push(errorElement.text())
     })
 
-    expect(actualErrorMessages).toContain(numberRules.isNumber.errorMessage)
-    expect(actualErrorMessages).toContain(numberRules.maxLength.errorMessage)
-    expect(actualErrorMessages).toContain(numberRules.minLength.errorMessage)
-    expect(actualErrorMessages).toContain(numberRules.required.errorMessage)
+    expect(actualErrorMessages).toContain(EXPECTED_IS_NUMBER_ERROR_MESSAGE)
+    expect(actualErrorMessages).toContain(EXPECTED_MAX_LENGTH_ERROR_MESSAGE)
+    expect(actualErrorMessages).toContain(EXPECTED_MIN_LENGTH_ERROR_MESSAGE)
+    expect(actualErrorMessages).toContain(EXPECTED_REQUIRED_ERROR_MESSAGE)
   })
 })

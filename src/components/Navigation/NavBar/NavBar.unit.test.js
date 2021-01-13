@@ -1,7 +1,6 @@
 import React from 'react'
 import { Context as ResponsiveContext } from 'react-responsive'
 import { MemoryRouter as Router } from 'react-router-dom'
-
 import { configure, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 

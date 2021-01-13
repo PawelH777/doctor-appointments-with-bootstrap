@@ -7,9 +7,9 @@ import flushPromises from 'flush-promises'
 import Contact from './Contact'
 import Form from '../../Form/Form'
 import Map from '../../../components/Map/Map'
-import { EmailDataModel } from '../../../data/stateDataModels/EmailDataModel'
-import { ContentDataModel } from '../../../data/stateDataModels/ContentDataModel'
-import { TitleDataModel } from '../../../data/stateDataModels/TitleDataModel'
+import { EmailDataModel } from '../../../data/inputsDataModels/EmailDataModel'
+import { ContentDataModel } from '../../../data/inputsDataModels/ContentDataModel'
+import { TitleDataModel } from '../../../data/inputsDataModels/TitleDataModel'
 import axios from '../../../axios-doctor-appointments'
 
 configure({ adapter: new Adapter() })

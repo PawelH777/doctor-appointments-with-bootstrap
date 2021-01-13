@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, withRouter, Redirect } from 'react-router-dom'
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 
 import Start from '../../containers/PageContent/Start/Start'
 import LogOut from '../../containers/PageContent/Auth/LogOut/LogOut'
